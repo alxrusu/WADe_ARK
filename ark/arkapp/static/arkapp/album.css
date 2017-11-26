@@ -56,3 +56,11 @@ footer {
 footer p {
   margin-bottom: .25rem;
 }
+
+figure.figure {
+  float: left;
+  width: 33.333%;
+  padding: .75rem;
+  margin-bottom: 2rem;
+  border: 0;
+}

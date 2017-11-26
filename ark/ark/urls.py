@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^ark/', include('arkapp.urls')),
+    url(r'^arkapp/', include('arkapp.urls')),
     url(r'^admin/', admin.site.urls),
 ]
