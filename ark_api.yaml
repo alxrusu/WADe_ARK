@@ -1,0 +1,391 @@
+openapi: "3.0.0"
+info:
+  Title: ARK API
+  description: Get relevant information about artwork provenance with ARK
+  version: "1.0.0"
+servers:
+  - url: https://api.ark.com //placeholder
+paths:
+  /artists:
+    get:
+        summary: Available Artists
+        
+        description: The Available Artists endpoint returns a list of Artist Names matching, if given, period, style, artist name and/or artwork name patterns, returning (if speciffied) a given maximum number of results.
+
+        parameters:
+          - name: period
+            in: query
+            description: Two timestamps to bound the returned results
+            required: false
+            schema:
+              $ref: '#/components/schemas/Interval'
+          - name: style
+            in: query
+            description: A style to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: artist_name_pattern
+            in: query
+            description: A artist name pattern to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: art_name_pattern
+            in: query
+            description: A artwork name pattern to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: maxresults
+            in: query
+            description: A number to to limit how many results are returned
+            required: false
+            schema:
+              type: integer
+
+        security: 
+          - apikey: []
+
+        responses:
+          '200':
+            description: An array of Artist names
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ArtistList"
+           default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+
+  /artist/{name}:
+      get:
+        summary: Artist by Name
+        
+        description: Returns an artist given their name.
+
+        parameters:
+          - name: name
+            in: path
+            description: The name of the artist
+            required: true
+            schema:
+              type: string
+
+        security: 
+          - apikey: []
+
+        responses:
+          '200':
+            description: Artist entry
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Artist"
+           default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+  /artworks:
+      get:
+        summary: Available Artworks
+        
+        description: The Available Artworks endpoint returns a list of Artwork Names matching, if given, period, style, artist name and/or artwork name patterns, returning (if speciffied) a given maximum number of results.
+
+        parameters:
+          - name: period
+            in: query
+            description: Two timestamps to bound the returned results
+            required: false
+            schema:
+              $ref: '#/components/schemas/Interval'
+          - name: style
+            in: query
+            description: A style to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: artist_name_pattern
+            in: query
+            description: A artist name pattern to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: art_name_pattern
+            in: query
+            description: A artwork name pattern to match the returned results
+            required: false
+            schema:
+              type: string
+          - name: maxresults
+            in: query
+            description: A number to to limit how many results are returned
+            required: false
+            schema:
+              type: integer
+
+        security: 
+          - apikey: []
+
+        responses:
+          '200':
+            description: An array of Artwork names
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ArtworkList"
+           default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+  /artwork/{name}:
+    get:
+      summary: Artwork by Name
+      
+      description: Returns an artwork given its name.
+
+      parameters:
+        - name: name
+          in: path
+          description: The name of the artwork
+          required: true
+          schema:
+            type: string
+
+      security: 
+        - apikey: []
+
+      responses:
+        '200':
+          description: Artwork entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artwork"
+         default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /styles:
+    get:
+      summary: Available Styles
+
+      description: The Available Styles endpoint returns a list of Style Names matching, if given, a style pattern, returning (if speciffied) a given maximum number of results.
+
+      parameters:
+        - name: style_pattern
+          in: query
+          description: A pattern to match the returned results
+          required: false
+          schema:
+            type: string
+        - name: maxresults
+          in: query
+          description: A number to to limit how many results are returned
+          required: false
+          schema:
+            type: integer
+
+      security:
+        -apikey: []
+
+      responses:
+          '200':
+            description: An array of Style names
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/StyleList"
+           default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+
+
+  /style/{name}:
+    get:
+      summary: Style by Name
+      
+      description: Returns a style given its name.
+
+      parameters:
+        - name: name
+          in: path
+          description: The name of the style
+          required: true
+          schema:
+            type: string
+
+      security: 
+        - apikey: []
+
+      responses:
+        '200':
+          description: Style entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Style"
+         default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+  /trending:
+    get:
+      summary: Available Trending Items
+
+      description: The Available Trending Items endpoint returns a 3 lists of names of Artists, Artworks and Styles, each containing, if the arguments are provided, maximum max_artists, max_artworks, max_styles entries.
+
+      parameters:
+        - name: max_artworks
+          in: query
+          description: A number to to limit how many artworks are returned
+          required: false
+          schema:
+            type: integer
+        - name: max_artists
+          in: query
+          description: A number to to limit how many artists are returned
+          required: false
+          schema:
+            type: integer
+        - name: max_styles
+          in: query
+          description: A number to to limit how many styles are returned
+          required: false
+          schema:
+            type: integer
+
+      security:
+        -apikey: []
+
+      responses:
+          '200':
+            description: Three arrays of artists, artworks and styles names
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/TrendingList"
+           default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Error:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        fields:
+          type: string
+
+    Interval:
+      properties:
+        begin-timestamp:
+          type: integer
+        end-timestamp:
+          type: integer
+
+    Artwork:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        artist:
+          type: string
+        style:
+          type: string
+        museum:
+          type: string
+        timestamp:
+          type: integer
+
+    Artist:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        styles:
+          type: array
+          items:
+            string
+        lifespan:
+          schema:
+            $ref: "#/components/schemas/Interval"
+        artworks:
+          type: array
+          items:
+            type: string
+
+    Style:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        
+    ArtistList:
+      properties:
+        artists:
+          type: array
+          items:
+            type: string
+
+    ArtworkList:
+      properties:
+        artworks:
+          type: array
+          items:
+            type: string
+
+    StyleList:
+      properties:
+        styles:
+          type: array
+          items:
+            type: string
+
+    TrendingList:
+      properties:
+        artworks:
+          type: array
+          items:
+            type: string
+        artists:
+          type: array
+          items:
+            type: string
+        styles:
+          type: array
+          items:
+            type: string
+
+
