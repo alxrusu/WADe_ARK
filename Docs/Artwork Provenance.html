@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://scholarly.vernacular.io/ -->
+<html lang="en-GB"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width">
+    <title>Scholarly HTML — Markedly Smart</title>
+    <link rel="stylesheet" href="./scholarly.css">
+    <link rel="stylesheet" href="./prism-coy.css">
+    <script src="./prism.js.download" defer=""></script>
+  <style></style></head>
+  <body prefix="schema: http://schema.org/ xsd: http://www.w3.org/2001/XMLSchema# sa: https://ns.science.ai/">
+    <header>
+      <p class="title">Artwork Provenance</p>
+      <p class="subtitle">Web Application Development</p>
+    </header>
+    <article id="what" typeof="schema:ScholarlyArticle" resource="#">
+      <h1>Artwork Provenance</h1>
+      <section>
+        <ol>
+          <li property="schema:author" typeof="sa:ContributorRole">
+              <span property="schema:givenName">Alexandru</span>
+              <span property="schema:familyName">Rusu</span>
+          </li>
+          <li property="schema:author" typeof="sa:ContributorRole">
+              <span property="schema:givenName">Lucian</span>
+              <span property="schema:familyName">Alexandru</span>
+          </li>
+          <li property="schema:author" typeof="sa:ContributorRole">
+              <span property="schema:givenName">Cristian</span>
+              <span property="schema:familyName">Ion</span>
+          </li>
+        </ol>
+        
+      </section>
+
+      <section typeof="sa:Abstract" id="abstract">
+        <h2>Abstract</h2>
+        <p>
+           <code>Artwork Provenance</code> is intended to be a support website targeted for art specialists and enthusiasts alike. The final product is a platform which brings together the most renowned art pieces, together with their artist and educational information. There will also be a recommendation system in place, which will guide users towards similar artworks matching their most recent searches.
+        </p>
+      </section>
+      <section typeof="sa:MaterialsAndMethods" id="motivation">
+        <h2>Motivation</h2>
+		<p>
+			Education in the arts is an integral part of the development of each human being.
+			In today's world, the primary sources of content information is no longer physical, as most content can be delivered more quickly over the internet.
+			The project helps users that want to learn about artists and their works in an interactive way. 
+			Through the <code>Recommendation System</code>, users will be guided through a personalized learning experience.
+			Art is also a remarkable mode of depicting culture from all over the world.
+			The projects achieves to collect artworks from many cultures as well as different time periods, all easily accessible.
+		</p>
+      </section>
+      
+		<h2>Workflow</h2>
+		
+		<p>The user acceses the main page. A <code>Trending Artworks and Artist List</code> will be available straight away, alongside a general purpouse <code>Search Box</code>.</p>
+		<p>The user can look for either an art piece, artist or visual style using the numerous and highly customisable search options provided by the ARK platform. </p>
+		<p>Upon selecting an entry, the details about it will be displayed, alongside a list of similar results.</p>
+		<p>Each artists will also have a dedicated page with information about his style and achievement. His most renowned artworks will be linked in his page.</p>
+		
+        <h2>Application Structure</h2>
+        
+
+		<figure typeof="sa:Image">
+            <img src="application structure.png">
+            <figcaption>
+				Application Structure
+            </figcaption>
+		</figure>
+		
+        <h2>Technologies</h2>  
+        <p>The project will have its bases in Python. The back-end will be developed using the <code>Django</code> framework because of its flexibility and easily applicable packages.</p>
+        <p>The artwork and artist information will be accessible through RESTful API Endpoints. The information will be provided by various <code>SPARQL</code> Endpoints, the main ones being <a href="http://wiki.dbpedia.org/">DBpedia</a> and <a href="https://www.wikidata.org/wiki/Wikidata:Main_Page">Wikidata</a>.</p>
+		<p>The front-end will be developed in <code>HTML5</code>, <code>CSS3</code> and <code>JavaScript</code>, with the <code>Bootstrap</code> framework aiding the stylisation and visual represantation.</p>
+		<p>A <code>MongoDB</code> database will be used aside Django in order to assure persistent data storing.
+		
+        <h2>RESTful API Specifications</h2>
+		<pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
+		<code class="language-yaml">
+/artists:
+	GET:	The Available Artists endpoint returns a list of Artist Names matching,
+			if given, period, style, artist name and/or artwork name patterns,
+			returning (if speciffied) a given maximum number of results.
+
+/artist/{name}:
+	GET:	Returns information about an artist given their name.
+
+/artworks:
+	GET:	The Available Artworks endpoint returns a list of Artwork Names matching,
+			if given, period, style, artist name and/or artwork name patterns,
+			returning (if speciffied) a given maximum number of results.
+
+/artwork/{name}:
+	GET:	 Returns information about an artwork given its name.
+
+/styles:
+	GET:	The Available Styles endpoint returns a list of Style Names matching,
+			if given, a style pattern, returning (if speciffied) a given maximum
+			number of results.
+
+/style/{name}:
+    GET:	Returns information about a style given its name.
+
+/trending:
+	GET:	The Available Trending Items endpoint returns a 3 lists of names of
+			Artists, Artworks and Styles, each containing, if the arguments are
+			provided, maximum max_artists, max_artworks, max_styles entries.
+        </code>
+		</pre>
+		<figcaption>
+			The markup for the OpenAPI.
+		</figcaption>
+		
+		<h2>SPARQL Queries</h2>
+		<p>Consider the following Query:</p>
+		<pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
+		<code class="language-yaml">
+select distinct ?Name where {
+    ?Name rdf:type dbo:Artwork.
+    ?Name dbo:author dbr:Leonardo_da_Vinci.
+    ?Name dbp:year ?Year.
+    ?Name dbp:type ?Type.
+    FILTER (?Type IN (dbr:Oil_painting, dbr:Panel_painting))
+}
+ORDER BY ?Year
+        </code>
+		</pre>
+		<figcaption>
+			DBpedia SPARQL Query Example
+		</figcaption>
+		
+		<p>The example above illustrates a potential query for the search functionality.</p>
+		<p>In this example, we are interrogating DBpedia for all artworks belonging to Leonardo da Vinci which are either oil or panel painting, sorted by their public appearance year.</p>
+		<p>The query produces the following valid result:</p>
+		
+		<table class="sparql" border="1">
+  <tbody><tr>
+    <th>Name</th>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Head_of_a_Woman_(Leonardo)">http://dbpedia.org/resource/Head_of_a_Woman_(Leonardo)</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/The_Virgin_and_Child_with_St._Anne_(Leonardo)">http://dbpedia.org/resource/The_Virgin_and_Child_with_St._Anne_(Leonardo)</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Virgin_of_the_Rocks">http://dbpedia.org/resource/Virgin_of_the_Rocks</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Lady_with_an_Ermine">http://dbpedia.org/resource/Lady_with_an_Ermine</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/La_belle_ferronnière">http://dbpedia.org/resource/La_belle_ferronnière</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Portrait_of_a_Musician">http://dbpedia.org/resource/Portrait_of_a_Musician</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Mona_Lisa">http://dbpedia.org/resource/Mona_Lisa</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Mona_Lisa_(Prado's_version)">http://dbpedia.org/resource/Mona_Lisa_(Prado's_version)</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/Bacchus_(Leonardo)">http://dbpedia.org/resource/Bacchus_(Leonardo)</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://dbpedia.org/resource/St._John_the_Baptist_(Leonardo)">http://dbpedia.org/resource/St._John_the_Baptist_(Leonardo)</a></td>
+  </tr>
+</tbody></table>
+
+		<h2>Task Distribution</h2>  
+        <li>Front End and Back End - Ion Cristian
+			<ul>
+        		<li>Design</li>
+				<li>API Endpoints</li>
+        	</ul>
+		</li>
+		
+        <li>Data management - Alexandru Lucian
+        	<ul>
+        		<li>SPARQL queries</li>
+        		<li>Database Management</li>
+        		<li>Recommendation Module</li>
+        	</ul>
+        </li>
+		
+		<li>Resources and Back End - Rusu Alexandru
+        	<ul>
+				<li>Integration</li>
+				<li>API Endpoints</li>
+         	</ul>
+        </li>
+
+    </article>
+    
+</body></html>
