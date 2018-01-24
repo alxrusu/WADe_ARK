@@ -5,7 +5,3 @@ from django.http import HttpResponse
 # Create your views here.
 def index(request):
     return render(request, 'arkapp/index.html')
-
-
-def album(request):
-    return render(request, 'arkapp/album.html')
