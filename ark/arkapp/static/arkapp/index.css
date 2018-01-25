@@ -28,6 +28,12 @@ a, a:hover, a:focus {
 	background: none;
 }
 
+#content {
+	/*padding: 20px;*/
+	min-height: 100vh;
+	transition: all 0.3s;
+}
+
 #search-btn {
 	background: none;
 	position: absolute;
@@ -36,10 +42,10 @@ a, a:hover, a:focus {
 }
 
 .search-custom {
-	float: left;
+	/*float: left;*/
 	margin: 0;
 	margin-top: 5;
-	margin-bottom: 5;
+	margin-bottom: 50px;
 }
 
 .search-input-custom {
@@ -83,7 +89,7 @@ a, a:hover, a:focus {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    /*min-height: 100vh;*/
+    min-height: 100vh;
     background: #7386D5;
     color: #fff;
     transition: all 0.3s;
@@ -155,4 +161,10 @@ a[aria-expanded="true"]::before {
     #sidebar.active {
         margin-left: 0;
     }
+}
+
+#results {
+	width: 100%;
+	border-top: 5px solid #f8f9fa;
+	padding-top: 20px;
 }
