@@ -12,31 +12,122 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
+    <script>
+      $(document).ready(function() {
+        $('#searchinput').keyup(function() {
+          $('#searchclear').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear').toggle(Boolean($("#searchinput").val()));
+        $('#searchclear').click(function() {
+          $('#searchinput').val('').focus();
+          $(this).hide();
+        });
+      });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+          $('#sidebarCollapse').on('click', function () {
+              $('#sidebar').toggleClass('active');
+          });
+      });
+    </script>
   </head>
 
 
-  <body>
-
-    <main role="main" class="container">
-
-      <form class="navbar-form" role="search">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search">
-            <span class="input-group-btn">
-              <button type="reset" class="btn btn-default">
-                <span class="glyphicon glyphicon-remove">
-                  <span class="sr-only">Close</span>
-                </span>
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="#"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+        <form class="form-inline w-100 search-custom" role="search">
+          <div class="btn-group w-100">
+              <input id="searchinput" type="search"
+                     class="form-control bg-light w-100 form-control-lg search-input-custom"
+                     placeholder="Search for..."
+                     value="">
+              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                <i class="fa fa-search fa-2x"></i>
               </button>
-              <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-search">
-                  <span class="sr-only">Search</span>
-                </span>
-              </button>
-            </span>
           </div>
         </form>
 
-    </main><!-- /.container -->
+        <div id="content">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                <i class="fa fa-align-left"></i>
+                Search Filters
+            </button>
+        <div>
+      </nav>
+    <!-- </div> -->
+
+    <!-- <aside class="sidebar h-100 col-sm-3 col-md-2 hidden-xs-down sidebar-custom">
+      
+    </aside>
+    <main role="main" class="container bg-light">
+    </main> -->
+
+
+    <div class="wrapper">
+
+      <!-- Sidebar -->
+      <nav id="sidebar">
+          
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <h3>Search Filters</h3>
+        </div>
+
+        <!-- Sidebar Links -->
+        <ul class="list-unstyled components">
+            <!-- <li class="active"><a href="#">Home</a></li> -->
+
+            <li><!-- Link with dropdown items -->
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Style</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+            </li>
+
+            <li><!-- Link with dropdown items -->
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Period</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+            </li>
+
+            <li><!-- Link with dropdown items -->
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Place</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+            </li>
+
+            <li><!-- Link with dropdown items -->
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Technique</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+            </li>
+        </ul>
+
+      </nav>
+
+      <!-- Page Content -->
+      <div id="content">
+          <!-- We'll fill this with dummy content -->
+      </div>
+
+    </div> 
   </body>
 </html>
