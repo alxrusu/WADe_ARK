@@ -72,7 +72,7 @@ def getArtist():
     query = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
-select distinct ?ArtistLabel ?Depiction ?Abstract (group_concat(DISTINCT ?MovementLabel; separator = ", ") as ?Movements)
+select distinct ?Depiction ?Abstract (group_concat(DISTINCT ?MovementLabel; separator = ", ") as ?Movements)
 MIN(?BirthDate) as ?RealBirthDate MIN(?DeathDate) as ?RealDeathDate where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Artist rdfs:label "%s"@en.
@@ -104,12 +104,98 @@ FILTER (lang(?MovementLabel) = "en").
 
     result = results["results"]["bindings"][0]
     response = dict()
+    artworks = list()
     response["Name"] = request.args["name"]
     response["Picture"] = result["Depiction"]["value"]
     response["Abstract"] = result["Abstract"]["value"]
     response["BirthDate"] = result["RealBirthDate"]["value"]
     response["DeathDate"] = result["RealDeathDate"]["value"]
     response["Movements"] = result["Movements"]["value"]
+    response["Artworks"] = artworks
+
+    query = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select ?ArtworkLabel ?Depiction where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist rdfs:label "%s"@en.
+?Artwork dbo:author ?Artist.
+?Artwork rdfs:label ?ArtworkLabel.
+?Artwork foaf:depiction ?Depiction.
+FILTER (lang(?ArtworkLabel) = "en").
+} LIMIT 5
+""" % (request.args['name'])
+
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    for result in results["results"]["bindings"]:
+        entity = dict()
+        entity["Author"] = request.args["name"]
+        entity["Artwork"] = result["ArtworkLabel"]["value"]
+        entity["Picture"] = result["Depiction"]["value"]
+        artworks.append(entity)
+
+    return jsonify(response)
+
+
+@app.route('/movements')
+def getMovements():
+
+    query = """
+select distinct ?MovementLabel where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist dbo:movement ?Movement.
+?Movement rdfs:label ?MovementLabel.
+FILTER (lang(?MovementLabel) = "en").
+} ORDER BY ?MovementLabel"""
+
+    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    response = list()
+
+    for result in results["results"]["bindings"]:
+        response.append(result["MovementLabel"]["value"])
+
+    return jsonify(response)
+
+
+@app.route('/movement')
+def getMovement():
+
+    if 'name' not in request.args or len(request.args) != 1:
+        return "Invalid Parameters", 400
+
+    query = """
+select distinct ?Abstract ?Depiction where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist dbo:movement ?Movement.
+?Movement rdfs:label "%s"@en.
+?Movement dbo:abstract ?Abstract.
+?Movement foaf:depiction ?Depiction
+FILTER (lang(?Abstract) = "en").
+}""" % (request.args['name'])
+
+    try:
+        sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+    except QueryBadFormed as e:
+        return "Invalid Parameters", 400
+
+    if len(results["results"]["bindings"]) < 1:
+        return "No results", 400
+
+    result = results["results"]["bindings"][0]
+    response = dict()
+    response["Name"] = request.args["name"]
+    response["Abstract"] = result["Abstract"]["value"]
+    response["Picture"] = result["Depiction"]["value"]
 
     return jsonify(response)
 

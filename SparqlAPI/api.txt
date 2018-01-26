@@ -1,0 +1,64 @@
+/artists
+GET
+Params:
+    [Optional]
+        limit = maximum number of results
+        offset = offset results
+        name = substring of name
+        movement = movement that influenced the artist
+        year = artist was alive during year
+Return:
+    400
+        Unknown/Invalid params
+    200
+        list of JSON
+            Name = full artist english name
+            Picture = artist picture url
+            Description = short english description
+
+
+/artist
+GET
+Params:
+    [Mandatory]
+        name = full artist english name
+Return:
+    400
+        Invalid param
+        No results
+    200
+        JSON
+            Name = full artist english name
+            Picture = artist picture
+            Abstract = long english description
+            BirthDate
+            DeathDate
+            Movements = movements that influenced the artist (string)
+            Artworks = list of JSON (max 5)
+                Author = full english artist name
+                Artwork = full english artwork name
+                Picture = artwork picture url
+
+
+/movements
+GET
+Params:
+Return:
+    200
+        list of string
+
+
+/movement
+GET
+Params:
+    [Mandatory]
+        name = full english movement name
+Return:
+    400
+        Invalid param
+        No results
+    200
+        JSON
+            Name = full movement english name
+            Abstract = long english description
+            Picture = suggestive picture url
