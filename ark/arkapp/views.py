@@ -14,5 +14,5 @@ def index(request):
     if request.method == "POST":
         if 'search' in request.POST:
             r = sparql_service.search_artists(request.POST['search'])
-            context["results"] = str(r)
+            context["results"] = r
     return render(request, 'arkapp/index.html', context)
