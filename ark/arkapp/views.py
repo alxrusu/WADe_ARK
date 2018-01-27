@@ -13,6 +13,11 @@ def index(request):
     context = dict()
     if request.method == "POST":
         if 'search' in request.POST:
-            r = sparql_service.search_artists(request.POST['search'])
+            name = request.POST['search']
+            movement = None
+            year = None
+            limit = None
+            offset = None
+            r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
             context["results"] = r
     return render(request, 'arkapp/index.html', context)
