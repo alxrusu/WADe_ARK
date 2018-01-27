@@ -15,7 +15,6 @@ class SparqlService:
             if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
                 payload['movement'] = movement
         if year is not None:
-            year = int(year)
             if isinstance(year, int) is True and year > 0:
                 payload['year'] = year
         if limit is not None:
