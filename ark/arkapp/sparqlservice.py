@@ -43,7 +43,11 @@ class SparqlService:
 
     def get_movements(self, name=None):
         url = self.url + '/movements'
-        res = requests.get(url)
+        payload = dict()
+        if name is not None:
+            if isinstance(name, str) is True and len(name) > 0:
+                payload['name'] = name
+        res = requests.get(url, params=payload)
         print(res.status_code)
         r = res.json()
         rf = []
