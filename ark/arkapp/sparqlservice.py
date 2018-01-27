@@ -67,7 +67,6 @@ class SparqlService:
         print(res.text)
         if res.status_code == 400:
             return {"Name": name}
-
         try:
             r = res.json()
         except Exception:

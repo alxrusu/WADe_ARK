@@ -57,10 +57,9 @@ def movements(request):
                 if isinstance(name, str) is True and len(name) > 0:
                     context['filters'].append(name)
         r = sparql_service.get_movements(name=name)
-        context["results"] = r
     else:
         r = sparql_service.get_movements(name=None)
-        context["results"] = r
+    context["results"] = r
     return render(request, 'arkapp/movements.html', context)
 
 
