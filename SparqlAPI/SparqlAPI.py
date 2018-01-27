@@ -133,7 +133,7 @@ FILTER (lang(?ArtworkLabel) = "en").
     for result in results["results"]["bindings"]:
         entity = dict()
         entity["Author"] = request.args["name"]
-        entity["Artwork"] = result["ArtworkLabel"]["value"]
+        entity["Name"] = result["ArtworkLabel"]["value"]
         entity["Picture"] = result["Depiction"]["value"]
         artworks.append(entity)
 
@@ -144,12 +144,21 @@ FILTER (lang(?ArtworkLabel) = "en").
 def getMovements():
 
     query = """
-select distinct ?MovementLabel where {
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?MovementLabel as ?Label where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Artist dbo:movement ?Movement.
 ?Movement rdfs:label ?MovementLabel.
+?Movement dbo:abstract ?Abstract.
+?Movement foaf:depiction ?Depiction.
 FILTER (lang(?MovementLabel) = "en").
-} ORDER BY ?MovementLabel"""
+"""
+
+    if 'name' in request.args:
+        query += """FILTER (contains (lcase(?MovementLabel), "%s")).\n""" % (request.args['name'].lower())
+
+    query += """} ORDER BY ?MovementLabel"""
 
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
@@ -159,7 +168,7 @@ FILTER (lang(?MovementLabel) = "en").
     response = list()
 
     for result in results["results"]["bindings"]:
-        response.append(result["MovementLabel"]["value"])
+        response.append(result["Label"]["value"])
 
     return jsonify(response)
 
@@ -171,12 +180,14 @@ def getMovement():
         return "Invalid Parameters", 400
 
     query = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
 select distinct ?Abstract ?Depiction where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Artist dbo:movement ?Movement.
 ?Movement rdfs:label "%s"@en.
 ?Movement dbo:abstract ?Abstract.
-?Movement foaf:depiction ?Depiction
+?Movement foaf:depiction ?Depiction.
 FILTER (lang(?Abstract) = "en").
 }""" % (request.args['name'])
 
@@ -196,6 +207,57 @@ FILTER (lang(?Abstract) = "en").
     response["Name"] = request.args["name"]
     response["Abstract"] = result["Abstract"]["value"]
     response["Picture"] = result["Depiction"]["value"]
+
+    return jsonify(response)
+
+
+@app.route('/artworks')
+def getArtworks():
+
+    limit = 15
+    offset = 0
+
+    query = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?PaintingLabel ?Depiction ?AuthorLabel where {
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+?Painting rdfs:label ?PaintingLabel.
+?Painting foaf:depiction ?Depiction.
+?Painting dbo:author ?Author.
+?Author rdfs:label ?AuthorLabel.
+FILTER (lang(?PaintingLabel) = "en").
+FILTER (lang(?AuthorLabel) = "en").
+"""
+
+    for key in request.args:
+        if key == 'limit':
+            limit = request.args[key]
+        elif key == 'offset':
+            offset = request.args[key]
+        elif key == 'name':
+            query += """FILTER (contains (lcase(?PaintingLabel), "%s")).\n""" % (request.args[key].lower())
+
+    query += """} LIMIT %s OFFSET %s""" % (limit, offset)
+
+    print (query)
+
+    try:
+        sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+        sparql.setQuery (query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+    except QueryBadFormed as e:
+        return "Invalid Parameters", 400
+
+    response = list()
+
+    for result in results["results"]["bindings"]:
+        entity = dict()
+        entity["Name"] = result["PaintingLabel"]["value"]
+        entity["Picture"] = result["Depiction"]["value"]
+        entity["Author"] = result["AuthorLabel"]["value"]
+        response.append(entity)
 
     return jsonify(response)
 

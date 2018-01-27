@@ -36,13 +36,15 @@ Return:
             Movements = movements that influenced the artist (string)
             Artworks = list of JSON (max 5)
                 Author = full english artist name
-                Artwork = full english artwork name
+                Name = full english artwork name
                 Picture = artwork picture url
 
 
 /movements
 GET
 Params:
+    [Optional]
+        name  = substring of movement name
 Return:
     200
         list of string
