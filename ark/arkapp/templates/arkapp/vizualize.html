@@ -1,0 +1,148 @@
+<html>
+
+  <head>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+
+    {% load font_awesome %}
+
+    {% fa_css %}
+
+    {% load static %}
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
+    <script>
+      $(document).ready(function() {
+        $('#searchinput').keyup(function() {
+          $('#searchclear').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear').toggle(Boolean($("#searchinput").val()));
+        $('#searchclear').click(function() {
+          $('#searchinput').val('').focus();
+          $(this).hide();
+        });
+      });
+    </script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Define the chart to be drawn.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Element');
+        data.addColumn('number', 'Percentage');
+        data.addRows([
+          ['Nitrogen', 0.78],
+          ['Oxygen', 0.21],
+          ['Other', 0.01]
+        ]);
+
+        // Instantiate and draw the chart.
+        var chart = new google.visualization.PieChart(document.getElementById('myPieChart'));
+        chart.draw(data, null);
+      }
+    </script> -->
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['timeline']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Artist' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+
+        // dataTable.addRows([
+        //   [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
+        //   [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
+        //   [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]]
+        //   );
+
+        rows = [];
+
+        {% for res in results %}
+          rows.push(['{{ res.Movements }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+        {% endfor %}
+
+        dataTable.addRows(rows);
+
+        chart.draw(dataTable);
+      }
+    </script>
+  </head>
+
+
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+      </nav>
+
+    <div class="wrapper">
+
+      <!-- Page Content -->
+      <div class="container">
+        <a class="btn btn-info navbar-btn text-white" href="/ark">
+            Artists
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/movements/">
+            Movements
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/vizualize/">
+            Vizualize
+        </a>
+        
+        <form method="post" class="form-inline w-100 search-custom" role="search">
+          {% csrf_token %}
+          <div class="btn-group w-100">
+              <input id="searchinput" type="search" name="search"
+                     class="form-control bg-light w-100 form-control-lg search-input-custom"
+                     placeholder="Search"
+                     value="">
+              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                <i class="fa fa-search fa-2x"></i>
+              </button>
+          </div>
+
+    
+          <div class="filters w-100">
+            {% for f in filters %}
+              <button class="btn btn-light">{{ f }}</button>
+            {% endfor %}
+          </div>
+        </form>
+
+        <div id="results">
+
+            <!-- {% for res in results %}
+                <div class="card">
+                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ res.Name }}</h5>
+                    <p class="card-text">{{ res.Description }}</p>
+                    <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                  </div>
+                </div>
+              {% endfor %} -->
+
+            <div id="timeline" style="height: 500px;"></div>
+        </div>
+
+        
+      </div>
+
+    </div> 
+  </body>
+</html>

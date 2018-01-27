@@ -31,6 +31,42 @@ class SparqlService:
             r = {}
         return r
 
+    def search_artists_ext(self, name=None, movement=None, year=None, limit=None, offset=None):
+        url = self.url + '/artists'
+        payload = dict()
+        if name is not None:
+            if isinstance(name, str) is True and len(name) > 0:
+                payload['name'] = name
+        if movement is not None:
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+                payload['movement'] = movement
+        if year is not None:
+            if isinstance(year, int) is True and year > 0:
+                payload['year'] = year
+        if limit is not None:
+            if isinstance(limit, int) is True and limit > 0:
+                payload['limit'] = limit
+        if offset is not None:
+            if isinstance(offset, int) is True and offset > 0:
+                payload['offset'] = offset
+        res = requests.get(url, params=payload)
+        print(res.status_code)
+        try:
+            r = res.json()
+        except Exception:
+            r = {}
+
+        for t in range(len(r)):
+            artist_r = self.get_artist(r[t]['Name'])
+            if len(artist_r) > 0:
+                new_d = artist_r
+                bd = new_d["BirthDate"].split('-')[0]
+                dd = new_d["DeathDate"].split('-')[0]
+                new_d["BirthDate"] = bd
+                new_d["DeathDate"] = dd
+                r[t].update(new_d)
+        return r
+
     def get_artist(self, name):
         url = self.url + '/artist'
         payload = {
@@ -38,7 +74,12 @@ class SparqlService:
         }
         res = requests.get(url, params=payload)
         print(res.status_code)
-        r = res.json()
+        if res.status_code == 400:
+            return {}
+        try:
+            r = res.json()
+        except Exception:
+            return {}
         return r
 
     def get_movements(self, name=None):
@@ -49,15 +90,12 @@ class SparqlService:
                 payload['name'] = name
         res = requests.get(url, params=payload)
         print(res.status_code)
-        r = res.json()
-        rf = []
-        if name is not None:
-            if isinstance(name, str) is True and len(name) > 0:
-                name = name.lower()
-                for m in r:
-                    if m.lower().find(name) >= 0:
-                        rf.append(m)
-                return rf
+        if res.status_code == 400:
+            return []
+        try:
+            r = res.json()
+        except Exception:
+            return []
         return r
 
     def get_movement(self, name):
