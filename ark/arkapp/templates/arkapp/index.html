@@ -43,34 +43,7 @@
     <!-- <div class="container"> -->
       <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
         <a class="navbar-brand" href="#"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
-        <!-- <form class="form-inline w-100 search-custom" role="search">
-          <div class="btn-group w-100">
-              <input id="searchinput" type="search"
-                     class="form-control bg-light w-100 form-control-lg search-input-custom"
-                     placeholder="Search for..."
-                     value="">
-              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
-                <i class="fa fa-search fa-2x"></i>
-              </button>
-          </div>
-        </form>
-
-        <div id="content">
-            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-                <i class="fa fa-align-left"></i>
-                Search Filters
-            </button>
-        <div> -->
       </nav>
-    <!-- </div> -->
-
-    <!-- <aside class="sidebar h-100 col-sm-3 col-md-2 hidden-xs-down sidebar-custom">
-      
-    </aside>
-    <main role="main" class="container bg-light">
-    </main> -->
-
 
     <div class="wrapper">
 
@@ -85,9 +58,8 @@
         <!-- Sidebar Links -->
         <ul class="list-unstyled components">
             <!-- <li class="active"><a href="#">Home</a></li> -->
-
             <li><!-- Link with dropdown items -->
-                <a href="#styleSubmenu" data-toggle="collapse" aria-expanded="false">Style</a>
+                <a href="#styleSubmenu" data-toggle="collapse" aria-expanded="false">Movements</a>
                 <ul class="collapse list-unstyled" id="styleSubmenu">
                     <li><a href="#">Page</a></li>
                     <li><a href="#">Page</a></li>
@@ -96,26 +68,8 @@
             </li>
 
             <li><!-- Link with dropdown items -->
-                <a href="#periodSubmenu" data-toggle="collapse" aria-expanded="false">Period</a>
+                <a href="#periodSubmenu" data-toggle="collapse" aria-expanded="false">Artists</a>
                 <ul class="collapse list-unstyled" id="periodSubmenu">
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                </ul>
-            </li>
-
-            <li><!-- Link with dropdown items -->
-                <a href="#placeSubmenu" data-toggle="collapse" aria-expanded="false">Place</a>
-                <ul class="collapse list-unstyled" id="placeSubmenu">
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                </ul>
-            </li>
-
-            <li><!-- Link with dropdown items -->
-                <a href="#techniqueSubmenu" data-toggle="collapse" aria-expanded="false">Technique</a>
-                <ul class="collapse list-unstyled" id="techniqueSubmenu">
                     <li><a href="#">Page</a></li>
                     <li><a href="#">Page</a></li>
                     <li><a href="#">Page</a></li>
@@ -132,9 +86,10 @@
             Filters
         </button>
 
-        <form class="form-inline w-100 search-custom" role="search">
+        <form method="post" class="form-inline w-100 search-custom" role="search">
+          {% csrf_token %}
           <div class="btn-group w-100">
-              <input id="searchinput" type="search"
+              <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search for..."
                      value="">
@@ -147,7 +102,7 @@
 
 
         <div id="results">
-          <p>Resultate asdasda as daks kand snd ind1in 1 sn i1n3in ask nd </p>
+          <p>{{ results }}</p>
         </div>
 
         
