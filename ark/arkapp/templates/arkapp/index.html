@@ -44,7 +44,7 @@
   <body class="bg-white">
     <!-- <div class="container"> -->
       <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
-        <a class="navbar-brand" href="#"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
       </nav>
 
     <div class="wrapper">
@@ -169,7 +169,8 @@
                   <div class="card-body">
                     <h5 class="card-title">{{ res.Name }}</h5>
                     <p class="card-text">{{ res.Description }}</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                    <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
                   </div>
                 </div>
               {% endfor %}

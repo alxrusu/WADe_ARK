@@ -38,4 +38,18 @@ def index(request):
                         context['filters'].append(year)
         r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
         context["results"] = r
+    else:
+        r = sparql_service.search_artists(None, None, None, limit=None, offset=None)
+        context["results"] = r
     return render(request, 'arkapp/index.html', context)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def view_artist(request):
+    context = dict()
+    name = request.GET['name']
+    print(name)
+    r = sparql_service.get_artist(name)
+    context["results"] = r
+    return render(request, 'arkapp/artist.html', context)

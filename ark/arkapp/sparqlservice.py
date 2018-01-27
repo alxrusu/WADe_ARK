@@ -31,10 +31,19 @@ class SparqlService:
             r = {}
         return r
 
+    def get_artist(self, name):
+        url = self.url + '/artist'
+        payload = {
+            "name": name
+        }
+        res = requests.get(url, params=payload)
+        print(res.status_code)
+        r = res.json()
+        return r
+
     def get_movements(self):
         url = self.url + '/movements'
         res = requests.get(url)
         print(res.status_code)
-        print(res.text)
         r = res.json()
         return r
