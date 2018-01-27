@@ -168,3 +168,8 @@ a[aria-expanded="true"]::before {
 	border-top: 5px solid #f8f9fa;
 	padding-top: 20px;
 }
+
+.filters {
+	width: 100%;
+	display: block;
+}

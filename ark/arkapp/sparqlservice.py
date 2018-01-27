@@ -9,17 +9,32 @@ class SparqlService:
         url = self.url + '/artists'
         payload = dict()
         if name is not None:
-            if len(name) > 0:
+            if isinstance(name, str) is True and len(name) > 0:
                 payload['name'] = name
         if movement is not None:
-            payload['movement'] = movement
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+                payload['movement'] = movement
         if year is not None:
-            payload['year'] = year
+            if isinstance(year, int) is True and year > 0:
+                payload['year'] = year
         if limit is not None:
-            payload['limit'] = limit
+            if isinstance(limit, int) is True and limit > 0:
+                payload['limit'] = limit
         if offset is not None:
-            payload['offset'] = offset
+            if isinstance(offset, int) is True and offset > 0:
+                payload['offset'] = offset
         res = requests.get(url, params=payload)
+        print(res.status_code)
+        print(res.text)
+        try:
+            r = res.json()
+        except Exception:
+            r = {}
+        return r
+
+    def get_movements(self):
+        url = self.url + '/movements'
+        res = requests.get(url)
         print(res.status_code)
         print(res.text)
         r = res.json()

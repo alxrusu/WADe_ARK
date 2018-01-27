@@ -47,16 +47,19 @@
 
     <div class="wrapper">
 
-      
-    <!--   <nav id="sidebar">
-        <!-- Sidebar Header
-        <div class="sidebar-header">
+      <!-- Sidebar -->
+      <!-- <nav id="sidebar"> -->
+          
+        <!-- Sidebar Header -->
+        <!-- <div class="sidebar-header">
             <h3>Search Filters</h3>
-        </div>
-        <!-- Sidebar Links
-        <ul class="list-unstyled components">
-            <!-- <li class="active"><a href="#">Home</a></li>
-            <li>
+        </div> -->
+
+        <!-- Sidebar Links -->
+        <!-- <ul class="list-unstyled components"> -->
+            <!-- <li class="active"><a href="#">Home</a></li> -->
+            
+            <!-- <li>
                 <a href="#styleSubmenu" data-toggle="collapse" aria-expanded="false">Movements</a>
                 <ul class="collapse list-unstyled" id="styleSubmenu">
                     <li><a href="#">Page</a></li>
@@ -64,13 +67,27 @@
                     <li><a href="#">Page</a></li>
                 </ul>
             </li>
-            <li><!-- Link with dropdown items
+
+            <li>
                 <a href="#periodSubmenu" data-toggle="collapse" aria-expanded="false">Artists</a>
                 <ul class="collapse list-unstyled" id="periodSubmenu">
                     <li><a href="#">Page</a></li>
                     <li><a href="#">Page</a></li>
                     <li><a href="#">Page</a></li>
                 </ul>
+            </li> -->
+            <!-- <li>
+              <label>Movements</label>
+              <select class="form-control">
+                  <option value="0" selected>All movements</option>
+                  {% for mov in movements %}
+                    <option value="{{ mov }}">{{ mov }}</option>
+                  {% endfor %}
+              </select>
+            </li>
+
+            <li>
+
             </li>
         </ul>
 
@@ -95,12 +112,34 @@
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Movements</label>
+            </div>
+            <select class="custom-select" name="movements" id="inputGroupSelect01">
+                  <option value="ALL" selected>All movements</option>
+                  {% for mov in movements %}
+                    <option value="{{ mov }}">{{ mov }}</option>
+                  {% endfor %}
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Year</label>
+            </div>
+            <input type="number" name="year" class="form-control" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="filters w-100">
+            {% for f in filters %}
+              <button class="btn btn-light">{{ f }}</button>
+            {% endfor %}
+          </div>
         </form>
 
-
         <div id="results">
-          <!-- <p>{{ results }}</p> -->
-
             <div class="card-columns">
               <!-- <div class="card">
                 <img class="card-img-top" src="..." alt="Card image cap">
