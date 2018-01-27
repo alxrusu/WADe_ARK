@@ -15,6 +15,7 @@ class SparqlService:
             if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
                 payload['movement'] = movement
         if year is not None:
+            year = int(year)
             if isinstance(year, int) is True and year > 0:
                 payload['year'] = year
         if limit is not None:
@@ -25,7 +26,6 @@ class SparqlService:
                 payload['offset'] = offset
         res = requests.get(url, params=payload)
         print(res.status_code)
-        print(res.text)
         try:
             r = res.json()
         except Exception:

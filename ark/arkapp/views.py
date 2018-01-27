@@ -32,6 +32,7 @@ def index(request):
         if 'year' in request.POST:
             year = request.POST['year']
             if year is not None:
+                year = int(year)
                 if isinstance(year, int) is True and year > 0:
                     context['filters'].append(year)
         r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
