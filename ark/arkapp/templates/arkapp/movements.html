@@ -100,7 +100,7 @@
         <a class="btn btn-info navbar-btn text-white" href="/ark">
             Artists
         </a>
-        <a class="btn btn-info navbar-btn text-white" href="movements/">
+        <a class="btn btn-info navbar-btn text-white" href="/ark/movements/">
             Movements
         </a>
         
@@ -109,7 +109,7 @@
           <div class="btn-group w-100">
               <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
-                     placeholder="Search artists by name"
+                     placeholder="Search movements"
                      value="">
               <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
               <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
@@ -117,7 +117,7 @@
               </button>
           </div>
 
-          <div class="input-group mb-3">
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Movements</label>
             </div>
@@ -134,7 +134,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Year</label>
             </div>
             <input type="number" name="year" class="form-control" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
-          </div>
+          </div> -->
 
           <div class="filters w-100">
             {% for f in filters %}
@@ -167,12 +167,12 @@
 
               {% for res in results %}
                 <div class="card">
-                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ res.Name }}</h5>
-                    <p class="card-text">{{ res.Description }}</p>
+                  <!-- <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap"> -->
+                  <div class="card-body text-center">
+                    <h5 class="card-title">{{ res }}</h5>
+                    <!-- <p class="card-text">{{ res }}</p> -->
                     <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
-                    <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                    <a href="movement/?name={{ res }}" class="btn btn-primary">View Page</a>
                   </div>
                 </div>
               {% endfor %}

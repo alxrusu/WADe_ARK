@@ -41,9 +41,35 @@ class SparqlService:
         r = res.json()
         return r
 
-    def get_movements(self):
+    def get_movements(self, name=None):
         url = self.url + '/movements'
         res = requests.get(url)
         print(res.status_code)
         r = res.json()
+        rf = []
+        if name is not None:
+            if isinstance(name, str) is True and len(name) > 0:
+                name = name.lower()
+                for m in r:
+                    if m.lower().find(name) >= 0:
+                        rf.append(m)
+                return rf
+        return r
+
+    def get_movement(self, name):
+        url = self.url + '/movement'
+        print(name)
+        payload = {
+            "name": name
+        }
+        res = requests.get(url, params=payload)
+        print(res.status_code)
+        print(res.text)
+        if res.status_code == 400:
+            return {"Name": name}
+
+        try:
+            r = res.json()
+        except Exception:
+            return {}
         return r

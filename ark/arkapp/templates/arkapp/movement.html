@@ -1,0 +1,50 @@
+<html>
+
+  <head>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+
+    {% load font_awesome %}
+
+    {% fa_css %}
+
+    {% load static %}
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
+
+    <script type="text/javascript"></script>
+  </head>
+
+
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+      </nav>
+
+    <div class="wrapper">
+
+      <!-- Page Content -->
+      <div class="container">
+        <div id="results">
+          <h3>{{ results.Name }}</h3>
+  
+          <figure class="figure text-center">
+            {% if results.Picture %}
+              <img src="{{ results.Picture }}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+            {% endif %}
+            <figcaption class="figure-caption">{{ results.Abstract }}</figcaption>
+          </figure>
+
+        </div>
+        
+      </div>
+
+    </div> 
+  </body>
+</html>
