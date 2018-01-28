@@ -83,3 +83,40 @@ def view_movement(request):
     r = sparql_service.get_movement(name)
     context["results"] = r
     return render(request, 'arkapp/movement.html', context)
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def vizualize(request):
+    context = dict()
+    context['movements'] = sparql_service.get_movements()
+    context['filters'] = []
+    if request.method == "POST":
+        name = None
+        movement = None
+        year = None
+        limit = None
+        offset = None
+        if 'search' in request.POST:
+            name = request.POST['search']
+            if name is not None:
+                if isinstance(name, str) is True and len(name) > 0:
+                    context['filters'].append(name)
+        if 'movements' in request.POST:
+            movement = request.POST['movements']
+            if movement is not None:
+                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+                    context['filters'].append(movement)
+        if 'year' in request.POST:
+            year = request.POST['year']
+            if year is not None:
+                if len(year) > 0:
+                    year = int(year)
+                    if isinstance(year, int) is True and year > 0:
+                        context['filters'].append(year)
+        r = sparql_service.search_artists_ext(name, movement, year, limit=limit, offset=offset)
+        context["results"] = r
+    else:
+        r = sparql_service.search_artists_ext(None, None, None, limit=None, offset=None)
+        context["results"] = r
+    return render(request, 'arkapp/vizualize.html', context)
