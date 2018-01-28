@@ -271,7 +271,7 @@ def getArtwork():
         return "Invalid Parameters", 400
 
     query = """
-select distinct ?Depiction ?AuthorLabel ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
+select distinct ?Depiction ?AuthorLabel ?Year ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
 ?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
 ?Painting rdfs:label "%s"@en.
 ?Painting foaf:depiction ?Depiction.
@@ -317,6 +317,10 @@ FILTER (lang(?Abstract) = "en").
     response["Name"] = request.args["name"]
     response["Picture"] = result["Depiction"]["value"]
     response["Author"] = result["AuthorLabel"]["value"]
+    if "Year" in result:
+        response["Year"] = result["Year"]["value"]
+    else:
+        response["Year"] = ""
     response["Museum"] = ""
     if "MuseumLabel" in result:
         response["Museum"] += result["MuseumLabel"]["value"]

@@ -96,6 +96,7 @@ Return:
             Name = full artwork english name
             Author = full english artist name
             Picture = suggestive picture url
+            Year = creation year (can be empty)
             Abstract = long english description (can be empty)
             Museum = current artwork location (can be empty)
             Dimensions = artwork dimensions (can be empty)
