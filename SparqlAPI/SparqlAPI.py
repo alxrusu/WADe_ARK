@@ -189,7 +189,7 @@ select distinct ?Abstract ?Depiction where {
 ?Movement dbo:abstract ?Abstract.
 ?Movement foaf:depiction ?Depiction.
 FILTER (lang(?Abstract) = "en").
-}""" % (request.args['name'])
+} LIMIT 1""" % (request.args['name'])
 
     try:
         sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -237,6 +237,8 @@ FILTER (lang(?AuthorLabel) = "en").
             offset = request.args[key]
         elif key == 'name':
             query += """FILTER (contains (lcase(?PaintingLabel), "%s")).\n""" % (request.args[key].lower())
+        elif key == 'author':
+            query += """FILTER (contains (lcase(?AuthorLabel), "%s")).\n""" % (request.args[key].lower())
 
     query += """} LIMIT %s OFFSET %s""" % (limit, offset)
 
@@ -258,6 +260,78 @@ FILTER (lang(?AuthorLabel) = "en").
         entity["Picture"] = result["Depiction"]["value"]
         entity["Author"] = result["AuthorLabel"]["value"]
         response.append(entity)
+
+    return jsonify(response)
+
+
+@app.route('/artwork')
+def getArtwork():
+
+    if 'name' not in request.args or len(request.args) != 1:
+        return "Invalid Parameters", 400
+
+    query = """
+select distinct ?Depiction ?AuthorLabel ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+?Painting rdfs:label "%s"@en.
+?Painting foaf:depiction ?Depiction.
+?Painting dbo:author ?Author.
+?Author rdfs:label ?AuthorLabel.
+FILTER (lang(?AuthorLabel) = "en").
+optional {
+?Painting dbp:heightMetric ?Height.
+?Painting dbp:widthMetric ?Width.
+}
+optional {
+?Painting dbp:year ?Year.
+}
+optional {
+?Painting dbo:museum ?Museum.
+?Museum rdfs:label ?MuseumLabel.
+FILTER (lang(?MuseumLabel) = "en").
+}
+optional {
+?Painting dbp:city ?City.
+?City rdfs:label ?CityLabel.
+FILTER (lang(?CityLabel) = "en").
+}
+optional {
+?Painting dbo:abstract ?Abstract.
+FILTER (lang(?Abstract) = "en").
+}
+} Limit 1""" % (request.args['name'])
+
+    try:
+        sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+    except QueryBadFormed as e:
+        return "Invalid Parameters", 400
+
+    if len(results["results"]["bindings"]) < 1:
+        return "No results", 400
+
+    result = results["results"]["bindings"][0]
+    response = dict()
+    response["Name"] = request.args["name"]
+    response["Picture"] = result["Depiction"]["value"]
+    response["Author"] = result["AuthorLabel"]["value"]
+    response["Museum"] = ""
+    if "MuseumLabel" in result:
+        response["Museum"] += result["MuseumLabel"]["value"]
+        if "CityLabel" in result:
+            response["Museum"] += ", "
+    if "CityLabel" in result:
+        response["Museum"] += result["CityLabel"]["value"]
+    if "Abstract" in result:
+        response["Abstract"] = result["Abstract"]["value"]
+    else:
+        response["Abstract"] = ""
+    if "Height" in result and "Width" in result:
+        response["Dimensions"] = "%s cm x %s cm" % (result["Height"]["value"], result["Width"]["value"])
+    else:
+        response["Dimensions"] = ""
 
     return jsonify(response)
 

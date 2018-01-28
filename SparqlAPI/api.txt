@@ -44,7 +44,7 @@ Return:
 GET
 Params:
     [Optional]
-        name  = substring of movement name
+        name = substring of movement name
 Return:
     200
         list of string
@@ -64,3 +64,38 @@ Return:
             Name = full movement english name
             Abstract = long english description
             Picture = suggestive picture url
+
+/artworks
+GET
+Params:
+    [Optional]
+        limit = maximum number of results
+        offset = offset results
+        name = substring of artwork name
+        author = substring of author name
+Return:
+    400
+        Invalid param
+    200
+        list of JSON
+            Author = full english artist name
+            Name = full english artwork name
+            Picture = artwork picture url
+
+/artwork
+GET
+Params:
+    [Mandatory]
+        name = full english artowork name
+Return:
+    400
+        Invalid param
+        No results
+    200
+        JSON
+            Name = full artwork english name
+            Author = full english artist name
+            Picture = suggestive picture url
+            Abstract = long english description (can be empty)
+            Museum = current artwork location (can be empty)
+            Dimensions = artwork dimensions (can be empty)
