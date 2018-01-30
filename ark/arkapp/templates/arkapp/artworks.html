@@ -29,6 +29,24 @@
       });
     </script>
 
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var backval = parseInt("{{more.offset}}") - 15;
+    
+        var nextval = parseInt("{{more.offset}}") + 15;
+
+        $("#prev").click(function(){
+          $( "#offset" ).val(backval);
+          $( "#target" ).submit();
+        });
+
+        $("#next").click(function(){
+          $( "#offset" ).val(nextval);
+          $( "#target" ).submit();
+        });
+      });
+    </script>
+
 
   </head>
 
@@ -56,7 +74,7 @@
             Vizualize
         </a>
 
-        <form method="post" class="form-inline w-100 search-custom" role="search">
+        <form id="target" method="post" class="form-inline w-100 search-custom" role="search">
           {% csrf_token %}
           <div class="btn-group w-100">
               <input id="searchinput" type="search" name="search"
@@ -85,9 +103,15 @@
               <button class="btn btn-light">{{ f }}</button>
             {% endfor %}
           </div>
+
+          <input style="display: none;" id="offset" type="Number" name="offset" value="{{ more.offset }}">
+            
         </form>
 
         <div id="results">
+
+            <button type="button" class="btn btn-light" id="prev">Previous Results</button>
+            <button type="button" class="btn btn-dark" id="next">More Results</button>
 
             <div class="card-columns">
 

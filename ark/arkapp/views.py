@@ -157,8 +157,22 @@ def view_artworks(request):
             if author is not None:
                 if isinstance(author, str) is True and len(author) > 0:
                     context['filters'].append(author)
+        if 'offset' in request.POST:
+            offset = request.POST['offset']
+            offset = int(offset)
+            if offset < 0:
+                offset = 0
     r = sparql_service.get_artworks(name, author, limit, offset)
     context["results"] = r
+    context["more"] = dict()
+    if name is not None:
+        context["more"]["name"] = name
+    if author is not None:
+        context["more"]["author"] = author
+    if offset is not None:
+        context["more"]["offset"] = offset
+    else:
+        context["more"]["offset"] = 0
     return render(request, 'arkapp/artworks.html', context)
 
 
