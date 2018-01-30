@@ -39,7 +39,7 @@ FILTER (?DeathDate > "%s-01-01"^^xsd:date)\n""" % (request.args[key], request.ar
         else:
             return "Unknown Parameter", 400
 
-    query += """} LIMIT %s OFFSET %s""" % (limit, offset)
+    query += """} ORDER BY ?ArtistLabel LIMIT %s OFFSET %s""" % (limit, offset)
 
     print (query)
 
@@ -240,7 +240,7 @@ FILTER (lang(?AuthorLabel) = "en").
         elif key == 'author':
             query += """FILTER (contains (lcase(?AuthorLabel), "%s")).\n""" % (request.args[key].lower())
 
-    query += """} LIMIT %s OFFSET %s""" % (limit, offset)
+    query += """} ORDER BY ?AuthorLabel ?PaintingLabel LIMIT %s OFFSET %s""" % (limit, offset)
 
     print (query)
 

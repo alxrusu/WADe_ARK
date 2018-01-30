@@ -120,3 +120,28 @@ def vizualize(request):
         r = sparql_service.search_artists_ext(None, None, None, limit=None, offset=None)
         context["results"] = r
     return render(request, 'arkapp/vizualize.html', context)
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def view_artworks(request):
+    context = dict()
+    context['filters'] = []
+    name = None
+    author = None
+    limit = None
+    offset = None
+    if request.method == "POST":
+        if 'search' in request.POST:
+            name = request.POST['search']
+            if name is not None:
+                if isinstance(name, str) is True and len(name) > 0:
+                    context['filters'].append(name)
+        if 'author' in request.POST:
+            author = request.POST['author']
+            if author is not None:
+                if isinstance(author, str) is True and len(author) > 0:
+                    context['filters'].append(author)
+    r = sparql_service.get_artworks(name, author, limit, offset)
+    context["results"] = r
+    return render(request, 'arkapp/artworks.html', context)

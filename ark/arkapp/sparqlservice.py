@@ -67,6 +67,29 @@ class SparqlService:
                 r[t].update(new_d)
         return r
 
+    def get_artworks(self, name=None, author=None, limit=None, offset=None):
+        url = self.url + '/artworks'
+        payload = dict()
+        if name is not None:
+            if isinstance(name, str) is True and len(name) > 0:
+                payload['name'] = name
+        if author is not None:
+            if isinstance(author, str) is True and len(author) > 0:
+                payload['author'] = author
+        if limit is not None:
+            if isinstance(limit, int) is True and limit > 0:
+                payload['limit'] = limit
+        if offset is not None:
+            if isinstance(offset, int) is True and offset > 0:
+                payload['offset'] = offset
+        res = requests.get(url, params=payload)
+        print(res.status_code)
+        try:
+            r = res.json()
+        except Exception:
+            r = {}
+        return r
+
     def get_artist(self, name):
         url = self.url + '/artist'
         payload = {

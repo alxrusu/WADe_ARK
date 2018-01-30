@@ -1,0 +1,115 @@
+<html>
+
+  <head>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+
+    {% load font_awesome %}
+
+    {% fa_css %}
+
+    {% load static %}
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
+    <script>
+      $(document).ready(function() {
+        $('#searchinput').keyup(function() {
+          $('#searchclear').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear').toggle(Boolean($("#searchinput").val()));
+        $('#searchclear').click(function() {
+          $('#searchinput').val('').focus();
+          $(this).hide();
+        });
+      });
+    </script>
+
+
+  </head>
+
+
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+      </nav>
+
+    <div class="wrapper">
+
+      <!-- Page Content -->
+      <div class="container">
+        <a class="btn btn-info navbar-btn text-white" href="/ark">
+            Artists
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/artworks/">
+            Artworks
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/movements/">
+            Movements
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/vizualize/">
+            Vizualize
+        </a>
+
+        <form method="post" class="form-inline w-100 search-custom" role="search">
+          {% csrf_token %}
+          <div class="btn-group w-100">
+              <input id="searchinput" type="search" name="search"
+                     class="form-control bg-light w-100 form-control-lg search-input-custom"
+                     placeholder="Search artwork by name"
+                     value="">
+              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                <i class="fa fa-search fa-2x"></i>
+              </button>
+          </div>
+
+          <div class="btn-group w-100">
+              <input id="searchinput" type="search" name="author"
+                     class="form-control bg-light w-100 form-control-lg search-input-custom"
+                     placeholder="Search artwork by author"
+                     value="">
+              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                <i class="fa fa-search fa-2x"></i>
+              </button>
+          </div>
+
+          <div class="filters w-100">
+            {% for f in filters %}
+              <button class="btn btn-light">{{ f }}</button>
+            {% endfor %}
+          </div>
+        </form>
+
+        <div id="results">
+
+            <div class="card-columns">
+
+              {% for res in results %}
+                <div class="card">
+                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ res.Name }}</h5>
+                    <p class="card-text">{{ res.Author }}</p>
+                    <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                    <a href="artwork/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                  </div>
+                </div>
+              {% endfor %}
+
+            </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+  </body>
+</html>
