@@ -15,6 +15,7 @@
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    
     <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
     <script>
       $(document).ready(function() {
@@ -37,7 +38,24 @@
       });
     </script>
 
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function(){
+        var backval = parseInt("{{more.offset}}") - 15;
+    
+        var nextval = parseInt("{{more.offset}}") + 15;
+
+        $("#prev").click(function(){
+          $( "#offset" ).val(backval);
+          $( "#target" ).submit();
+        });
+
+        $("#next").click(function(){
+          $( "#offset" ).val(nextval);
+          $( "#target" ).submit();
+        });
+      });
+    </script>
   </head>
 
 
@@ -48,52 +66,6 @@
       </nav>
 
     <div class="wrapper">
-
-      <!-- Sidebar -->
-      <!-- <nav id="sidebar"> -->
-          
-        <!-- Sidebar Header -->
-        <!-- <div class="sidebar-header">
-            <h3>Search Filters</h3>
-        </div> -->
-
-        <!-- Sidebar Links -->
-        <!-- <ul class="list-unstyled components"> -->
-            <!-- <li class="active"><a href="#">Home</a></li> -->
-            
-            <!-- <li>
-                <a href="#styleSubmenu" data-toggle="collapse" aria-expanded="false">Movements</a>
-                <ul class="collapse list-unstyled" id="styleSubmenu">
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="#periodSubmenu" data-toggle="collapse" aria-expanded="false">Artists</a>
-                <ul class="collapse list-unstyled" id="periodSubmenu">
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
-                </ul>
-            </li> -->
-            <!-- <li>
-              <label>Movements</label>
-              <select class="form-control">
-                  <option value="0" selected>All movements</option>
-                  {% for mov in movements %}
-                    <option value="{{ mov }}">{{ mov }}</option>
-                  {% endfor %}
-              </select>
-            </li>
-
-            <li>
-
-            </li>
-        </ul>
-
-      </nav> -->
 
       <!-- Page Content -->
       <div class="container">
@@ -110,13 +82,13 @@
             Vizualize
         </a>
         
-        <form method="post" class="form-inline w-100 search-custom" role="search">
+        <form id="target" method="post" class="form-inline w-100 search-custom" role="search">
           {% csrf_token %}
           <div class="btn-group w-100">
               <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artists by name"
-                     value="">
+                     value="{{ more.name }}">
               <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
               <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
                 <i class="fa fa-search fa-2x"></i>
@@ -128,7 +100,12 @@
               <label class="input-group-text" for="inputGroupSelect01">Movements</label>
             </div>
             <select class="custom-select" name="movements" id="inputGroupSelect01">
-                  <option value="ALL" selected>All movements</option>
+                  {% if more.movement %}
+                    <option value="{{ more.movement }}" selected>{{ more.movement }}</option>
+                  {% else %}
+                    <option value="ALL" selected>All movements</option>
+                  {% endif %}
+
                   {% for mov in movements %}
                     <option value="{{ mov }}">{{ mov }}</option>
                   {% endfor %}
@@ -139,7 +116,11 @@
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Year</label>
             </div>
-            <input type="number" name="year" class="form-control" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
+            {% if more.year %}
+              <input type="number" name="year" class="form-control" value="{{ more.year }}" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
+            {% else %}
+              <input type="number" name="year" class="form-control" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
+            {% endif %}
           </div>
 
           <div class="filters w-100">
@@ -147,29 +128,17 @@
               <button class="btn btn-light">{{ f }}</button>
             {% endfor %}
           </div>
+
+            <input style="display: none;" id="offset" type="Number" name="offset" value="{{ more.offset }}">
+            
         </form>
 
         <div id="results">
 
+            <button type="button" class="btn btn-light" id="prev">Previous Results</button>
+            <button type="button" class="btn btn-dark" id="next">More Results</button>
+            
             <div class="card-columns">
-              <!-- <div class="card">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">Card title that wraps to a new line</h5>
-                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-              </div> -->
-
-              <!-- <div class="card p-3">
-                <blockquote class="blockquote mb-0 card-body">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer class="blockquote-footer">
-                    <small class="text-muted">
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
 
               {% for res in results %}
                 <div class="card">
@@ -182,47 +151,6 @@
                   </div>
                 </div>
               {% endfor %}
-
-              <!-- <div class="card bg-primary text-white text-center p-3">
-                <blockquote class="blockquote mb-0">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat.</p>
-                  <footer class="blockquote-footer">
-                    <small>
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
-
-              <!-- <div class="card text-center">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div> -->
-
-              <!-- <div class="card">
-                <img class="card-img" src="..." alt="Card image">
-              </div>
-              <div class="card p-3 text-right">
-                <blockquote class="blockquote mb-0">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer class="blockquote-footer">
-                    <small class="text-muted">
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
-
-              <!-- <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div> -->
 
             </div>
 

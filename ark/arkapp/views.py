@@ -13,12 +13,13 @@ def index(request):
     context = dict()
     context['movements'] = sparql_service.get_movements()
     context['filters'] = []
+
+    limit = None
+    offset = None
+    name = None
+    movement = None
+    year = None
     if request.method == "POST":
-        name = None
-        movement = None
-        year = None
-        limit = None
-        offset = None
         if 'search' in request.POST:
             name = request.POST['search']
             if name is not None:
@@ -36,11 +37,25 @@ def index(request):
                     year = int(year)
                     if isinstance(year, int) is True and year > 0:
                         context['filters'].append(year)
-        r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
-        context["results"] = r
+        if 'offset' in request.POST:
+            offset = request.POST['offset']
+            offset = int(offset)
+            if offset < 0:
+                offset = 0
+    r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
+    context["results"] = r
+
+    context["more"] = dict()
+    if name is not None:
+        context["more"]["name"] = name
+    if movement is not None:
+        context["more"]["movement"] = movement
+    if year is not None:
+        context["more"]["year"] = year
+    if offset is not None:
+        context["more"]["offset"] = offset
     else:
-        r = sparql_service.search_artists(None, None, None, limit=None, offset=None)
-        context["results"] = r
+        context["more"]["offset"] = 0
     return render(request, 'arkapp/index.html', context)
 
 
