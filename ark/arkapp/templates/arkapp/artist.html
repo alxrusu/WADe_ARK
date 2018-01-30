@@ -33,22 +33,25 @@
       <div class="container">
         <div id="results">
           <h3>{{ results.Name }}</h3>
+          <br>
           {% if results.BirthDate %}
             <h5>Born : {{ results.BirthDate }} </h5>
           {% endif %}
           {% if results.DeathDate %}
             <h5>Died : {{ results.DeathDate }} </h5>
           {% endif %}
-
           {% if results.Movements %}
             <h5>Movements : {{ results.Movements }}</h5>
           {% endif %}
-  
+          <br>
+
           <figure class="figure text-center">
             <img src="{{ results.Picture }}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
             <figcaption class="figure-caption">{{ results.Abstract }}</figcaption>
           </figure>
 
+            <br>
+            <h3>Artworks</h3>
             <div class="card-columns">
               <!-- <div class="card">
                 <img class="card-img-top" src="..." alt="Card image cap">
@@ -75,7 +78,7 @@
                   <div class="card-body">
                     <h5 class="card-title">{{ res.Name }}</h5>
                     <p class="card-text">{{ res.Author }}</p>
-                   <!--  <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a> -->
+                    <a href="/ark/artwork/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
                   </div>
                 </div>
               {% endfor %}

@@ -105,6 +105,21 @@ class SparqlService:
             return {}
         return r
 
+    def get_artwork(self, name):
+        url = self.url + '/artwork'
+        payload = {
+            "name": name
+        }
+        res = requests.get(url, params=payload)
+        print(res.status_code)
+        if res.status_code == 400:
+            return {}
+        try:
+            r = res.json()
+        except Exception:
+            return {}
+        return r
+
     def get_movements(self, name=None):
         url = self.url + '/movements'
         payload = dict()

@@ -145,3 +145,14 @@ def view_artworks(request):
     r = sparql_service.get_artworks(name, author, limit, offset)
     context["results"] = r
     return render(request, 'arkapp/artworks.html', context)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def view_artwork(request):
+    context = dict()
+    name = request.GET['name']
+    print(name)
+    r = sparql_service.get_artwork(name)
+    context["results"] = r
+    return render(request, 'arkapp/artwork.html', context)

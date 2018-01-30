@@ -19,6 +19,8 @@ select distinct ?ArtistLabel ?Depiction ?Description where {
 ?Artist rdfs:label ?ArtistLabel.
 ?Artist foaf:depiction ?Depiction.
 ?Artist dct:description ?Description.
+?Painting dbo:author ?Artist.
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
 FILTER (lang(?ArtistLabel) = "en").
 FILTER (lang(?Description) = "en").
 """
@@ -120,6 +122,7 @@ select ?ArtworkLabel ?Depiction where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Artist rdfs:label "%s"@en.
 ?Artwork dbo:author ?Artist.
+?Artwork <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
 ?Artwork rdfs:label ?ArtworkLabel.
 ?Artwork foaf:depiction ?Depiction.
 FILTER (lang(?ArtworkLabel) = "en").
@@ -225,6 +228,7 @@ select distinct ?PaintingLabel ?Depiction ?AuthorLabel where {
 ?Painting rdfs:label ?PaintingLabel.
 ?Painting foaf:depiction ?Depiction.
 ?Painting dbo:author ?Author.
+?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Author rdfs:label ?AuthorLabel.
 FILTER (lang(?PaintingLabel) = "en").
 FILTER (lang(?AuthorLabel) = "en").
@@ -276,6 +280,7 @@ select distinct ?Depiction ?AuthorLabel ?Year ?MuseumLabel ?CityLabel ?Height ?W
 ?Painting rdfs:label "%s"@en.
 ?Painting foaf:depiction ?Depiction.
 ?Painting dbo:author ?Author.
+?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Author rdfs:label ?AuthorLabel.
 FILTER (lang(?AuthorLabel) = "en").
 optional {
