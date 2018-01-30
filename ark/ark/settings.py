@@ -25,7 +25,7 @@ SECRET_KEY = '^591xji9=3#v&y8)%8sj3y7=ftki$f9x57ndah6udbkvqpmstt'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wadeark.appspot.com']
 
 
 # Application definition
