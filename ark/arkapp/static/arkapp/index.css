@@ -41,6 +41,13 @@ a, a:hover, a:focus {
 	top: 15px;
 }
 
+#search-btn2 {
+	background: none;
+	position: absolute;
+	right: 5px;
+	top: 15px;
+}
+
 .search-custom {
 	/*float: left;*/
 	margin: 0;
@@ -69,6 +76,15 @@ a, a:hover, a:focus {
 }
 
 #searchclear {
+    position: absolute;
+	right: 70px;
+	top: 23px;
+	margin: 0;
+	cursor: pointer;
+	color: #ccc;
+}
+
+#searchclear2 {
     position: absolute;
 	right: 70px;
 	top: 23px;

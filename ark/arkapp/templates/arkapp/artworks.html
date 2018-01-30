@@ -26,6 +26,15 @@
           $('#searchinput').val('').focus();
           $(this).hide();
         });
+
+        $('#searchinput2').keyup(function() {
+          $('#searchclear2').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear2').toggle(Boolean($("#searchinput2").val()));
+        $('#searchclear2').click(function() {
+          $('#searchinput2').val('').focus();
+          $(this).hide();
+        });
       });
     </script>
 
@@ -42,6 +51,16 @@
 
         $("#next").click(function(){
           $( "#offset" ).val(nextval);
+          $( "#target" ).submit();
+        });
+
+        $("#search-btn").click(function(){
+          $( "#offset" ).val(0);
+          $( "#target" ).submit();
+        });
+
+        $("#search-btn2").click(function(){
+          $( "#offset" ).val(0);
           $( "#target" ).submit();
         });
       });
@@ -80,20 +99,20 @@
               <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artwork by name"
-                     value="">
+                     value="{{ more.name }}">
               <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+              <button class="btn btn-default input-group-addon" type="button" id='search-btn'>
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
 
           <div class="btn-group w-100">
-              <input id="searchinput" type="search" name="author"
+              <input id="searchinput2" type="search" name="author"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artwork by author"
-                     value="">
-              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                     value="{{ more.author }}">
+              <span id="searchclear2" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="button" id='search-btn2'>
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
