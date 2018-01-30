@@ -3,3 +3,4 @@ Django==2.0.1
 django-bootstrap3==9.1.0
 django-bootstrap4==0.0.5
 django-fa==1.0.0
+requests==2.18.4

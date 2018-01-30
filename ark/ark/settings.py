@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^591xji9=3#v&y8)%8sj3y7=ftki$f9x57ndah6udbkvqpmstt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['wadeark.appspot.com']
+ALLOWED_HOSTS = ['wadeark.appspot.com', 'localhost']
 
 
 # Application definition
@@ -124,7 +124,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-STATIC_URL = '/static/'
+STATIC_URL = '/ark/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "arkapp", "static"),
