@@ -126,7 +126,7 @@ select ?ArtworkLabel ?Depiction where {
 ?Artwork rdfs:label ?ArtworkLabel.
 ?Artwork foaf:depiction ?Depiction.
 FILTER (lang(?ArtworkLabel) = "en").
-} LIMIT 5
+} LIMIT 6
 """ % (request.args['name'])
 
     sparql.setQuery(query)
@@ -151,6 +151,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
 select distinct ?MovementLabel as ?Label where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Painting dbo:author ?Artist.
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
 ?Artist dbo:movement ?Movement.
 ?Movement rdfs:label ?MovementLabel.
 ?Movement dbo:abstract ?Abstract.
@@ -207,9 +209,38 @@ FILTER (lang(?Abstract) = "en").
 
     result = results["results"]["bindings"][0]
     response = dict()
+    artists = list()
     response["Name"] = request.args["name"]
     response["Abstract"] = result["Abstract"]["value"]
     response["Picture"] = result["Depiction"]["value"]
+    response["Artists"] = artists
+
+    query = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?ArtistLabel ?Depiction ?Description where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist rdfs:label ?ArtistLabel.
+?Artist foaf:depiction ?Depiction.
+?Artist dct:description ?Description.
+?Painting dbo:author ?Artist.
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+FILTER (lang(?ArtistLabel) = "en").
+FILTER (lang(?Description) = "en").
+?Artist dbo:movement ?Movement.
+?Movement rdfs:label "%s"@en.
+} LIMIT 6""" % (request.args['name'])
+
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    for result in results["results"]["bindings"]:
+        entity = dict()
+        entity["Name"] = result["ArtistLabel"]["value"]
+        entity["Picture"] = result["Depiction"]["value"]
+        entity["Description"] = result["Description"]["value"]
+        artists.append(entity)
 
     return jsonify(response)
 
