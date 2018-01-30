@@ -12,7 +12,7 @@ class SparqlService:
             if isinstance(name, str) is True and len(name) > 0:
                 payload['name'] = name
         if movement is not None:
-            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                 payload['movement'] = movement
         if year is not None:
             if isinstance(year, int) is True and year > 0:
@@ -38,7 +38,7 @@ class SparqlService:
             if isinstance(name, str) is True and len(name) > 0:
                 payload['name'] = name
         if movement is not None:
-            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                 payload['movement'] = movement
         if year is not None:
             if isinstance(year, int) is True and year > 0:

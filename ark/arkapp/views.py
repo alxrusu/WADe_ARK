@@ -28,7 +28,7 @@ def index(request):
         if 'movements' in request.POST:
             movement = request.POST['movements']
             if movement is not None:
-                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                     context['filters'].append(movement)
         if 'year' in request.POST:
             year = request.POST['year']
@@ -120,7 +120,7 @@ def vizualize(request):
         if 'movements' in request.POST:
             movement = request.POST['movements']
             if movement is not None:
-                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                     context['filters'].append(movement)
         if 'year' in request.POST:
             year = request.POST['year']
