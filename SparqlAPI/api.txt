@@ -34,7 +34,7 @@ Return:
             BirthDate
             DeathDate
             Movements = movements that influenced the artist (string)
-            Artworks = list of JSON (max 5)
+            Artworks = list of JSON (max 6)
                 Author = full english artist name
                 Name = full english artwork name
                 Picture = artwork picture url
@@ -64,6 +64,10 @@ Return:
             Name = full movement english name
             Abstract = long english description
             Picture = suggestive picture url
+            Artists = list of JSON (max 6)
+                Name = full artist english name
+                Picture = artist picture url
+                Description = short english description
 
 /artworks
 GET
