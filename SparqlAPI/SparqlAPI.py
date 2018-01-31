@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 from SPARQLWrapper import SPARQLWrapper, JSON
 from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
+from adnotations import artist_adnotation, artist_list_adnotation,\
+    movement_list_adnotation, artwork_adnotation, movement_adnotation,\
+    artwork_list_adnotation
 
 app = Flask(__name__)
 
@@ -44,7 +47,7 @@ FILTER (?DeathDate > "%s-1-1"^^xsd:date)\n""" % (request.args[key], request.args
 
     query += """} ORDER BY ?ArtistLabel LIMIT %s OFFSET %s""" % (limit, offset)
 
-    print (query)
+    #print (query)
 
     try:
         sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -63,7 +66,7 @@ FILTER (?DeathDate > "%s-1-1"^^xsd:date)\n""" % (request.args[key], request.args
         entity["Description"] = result["Description"]["value"]
         response.append(entity)
 
-    return jsonify(response)
+    return jsonify(artist_list_adnotation(response))
 
 
 @app.route('/artist')
@@ -151,7 +154,7 @@ FILTER (lang(?ArtworkLabel) = "en").
         entity["Picture"] = result["Depiction"]["value"]
         artworks.append(entity)
 
-    return jsonify(response)
+    return jsonify(artist_adnotation(response))
 
 
 @app.route('/movements')
@@ -186,7 +189,7 @@ FILTER (lang(?MovementLabel) = "en").
     for result in results["results"]["bindings"]:
         response.append(result["Label"]["value"])
 
-    return jsonify(response)
+    return jsonify(movement_list_adnotation(response))
 
 
 @app.route('/movement')
@@ -253,7 +256,7 @@ FILTER (lang(?Description) = "en").
         entity["Description"] = result["Description"]["value"]
         artists.append(entity)
 
-    return jsonify(response)
+    return jsonify(movement_adnotation(response))
 
 
 @app.route('/artworks')
@@ -307,7 +310,7 @@ FILTER (lang(?AuthorLabel) = "en").
         entity["Author"] = result["AuthorLabel"]["value"]
         response.append(entity)
 
-    return jsonify(response)
+    return jsonify(artwork_list_adnotation(response))
 
 
 def queryArtwork(name):
@@ -393,7 +396,7 @@ def getArtwork():
     if response is None:
         return "No results", 400
 
-    return jsonify(response)
+    return jsonify(artwork_adnotation(response))
 
 
 @app.route('/recommend/artwork')
