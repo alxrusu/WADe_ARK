@@ -88,18 +88,18 @@
           </div>
         </form>
 
-        <div id="results">
+        <div id="results" vocab="http://schema.org/" typeof="CreativeWork" resource="Movements">
 
-            <div class="card-columns">
+            <div class="card-columns" property="Movements" typeof="ItemList" resource="List">
               
               {% for res in results %}
-                <div class="card">
+                <div class="card" property="Movements" typeof="ListItem">
 				  {% if res.Picture %}
-                    <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
+                    <img class="card-img-top" property="Image" resource="{{ res.Picture }}" src="{{ res.Picture }}" alt="Card image cap">
 				  {% endif %}
-                  <a href="movement/?name={{ res.Name }}">
+                  <a property="Query" href="movement/?name={{ res.Name }}">
                     <div class="card-body text-center">
-                      <h5 class="card-title">{{ res.Name }}</h5>
+                      <h5 class="card-title" property="name">{{ res.Name }}</h5>
                       <p class="btn btn-link">View Page</p>
                     </div>
                   </a>
