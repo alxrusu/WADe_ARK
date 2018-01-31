@@ -3,7 +3,7 @@ import requests
 
 class SparqlService:
     def __init__(self):
-        self.url = "http://127.0.0.1:5000"
+        self.url = "https://sparqlapi-dot-wadeark.appspot.com"
 
     def search_artists(self, name=None, movement=None, year=None, limit=None, offset=None):
         url = self.url + '/artists'
@@ -12,7 +12,7 @@ class SparqlService:
             if isinstance(name, str) is True and len(name) > 0:
                 payload['name'] = name
         if movement is not None:
-            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                 payload['movement'] = movement
         if year is not None:
             if isinstance(year, int) is True and year > 0:
@@ -38,7 +38,7 @@ class SparqlService:
             if isinstance(name, str) is True and len(name) > 0:
                 payload['name'] = name
         if movement is not None:
-            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'ALL':
+            if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
                 payload['movement'] = movement
         if year is not None:
             if isinstance(year, int) is True and year > 0:

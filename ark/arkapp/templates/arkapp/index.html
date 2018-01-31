@@ -54,6 +54,12 @@
           $( "#offset" ).val(nextval);
           $( "#target" ).submit();
         });
+
+        $("#search-btn").click(function(){
+          $( "#offset" ).val(0);
+          $( "#target" ).submit();
+        });
+
       });
     </script>
   </head>
@@ -90,7 +96,7 @@
                      placeholder="Search artists by name"
                      value="{{ more.name }}">
               <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+              <button class="btn btn-default input-group-addon" type="button" id='search-btn'>
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
@@ -103,7 +109,7 @@
                   {% if more.movement %}
                     <option value="{{ more.movement }}" selected>{{ more.movement }}</option>
                   {% else %}
-                    <option value="ALL" selected>All movements</option>
+                    <option value="All" selected>All</option>
                   {% endif %}
 
                   {% for mov in movements %}
@@ -129,7 +135,7 @@
             {% endfor %}
           </div>
 
-            <input style="display: none;" id="offset" type="Number" name="offset" value="{{ more.offset }}">
+          <input style="display: none;" id="offset" type="Number" name="offset" value="{{ more.offset }}">
             
         </form>
 
@@ -137,7 +143,7 @@
 
             <button type="button" class="btn btn-light" id="prev">Previous Results</button>
             <button type="button" class="btn btn-dark" id="next">More Results</button>
-            
+
             <div class="card-columns">
 
               {% for res in results %}

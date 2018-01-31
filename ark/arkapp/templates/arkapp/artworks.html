@@ -26,6 +26,43 @@
           $('#searchinput').val('').focus();
           $(this).hide();
         });
+
+        $('#searchinput2').keyup(function() {
+          $('#searchclear2').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear2').toggle(Boolean($("#searchinput2").val()));
+        $('#searchclear2').click(function() {
+          $('#searchinput2').val('').focus();
+          $(this).hide();
+        });
+      });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var backval = parseInt("{{more.offset}}") - 15;
+    
+        var nextval = parseInt("{{more.offset}}") + 15;
+
+        $("#prev").click(function(){
+          $( "#offset" ).val(backval);
+          $( "#target" ).submit();
+        });
+
+        $("#next").click(function(){
+          $( "#offset" ).val(nextval);
+          $( "#target" ).submit();
+        });
+
+        $("#search-btn").click(function(){
+          $( "#offset" ).val(0);
+          $( "#target" ).submit();
+        });
+
+        $("#search-btn2").click(function(){
+          $( "#offset" ).val(0);
+          $( "#target" ).submit();
+        });
       });
     </script>
 
@@ -56,26 +93,26 @@
             Vizualize
         </a>
 
-        <form method="post" class="form-inline w-100 search-custom" role="search">
+        <form id="target" method="post" class="form-inline w-100 search-custom" role="search">
           {% csrf_token %}
           <div class="btn-group w-100">
               <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artwork by name"
-                     value="">
+                     value="{{ more.name }}">
               <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+              <button class="btn btn-default input-group-addon" type="button" id='search-btn'>
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
 
           <div class="btn-group w-100">
-              <input id="searchinput" type="search" name="author"
+              <input id="searchinput2" type="search" name="author"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artwork by author"
-                     value="">
-              <span id="searchclear" class="fa fa-times-circle fa-2x"></span>
-              <button class="btn btn-default input-group-addon" type="submit" id='search-btn'>
+                     value="{{ more.author }}">
+              <span id="searchclear2" class="fa fa-times-circle fa-2x"></span>
+              <button class="btn btn-default input-group-addon" type="button" id='search-btn2'>
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
@@ -85,9 +122,15 @@
               <button class="btn btn-light">{{ f }}</button>
             {% endfor %}
           </div>
+
+          <input style="display: none;" id="offset" type="Number" name="offset" value="{{ more.offset }}">
+            
         </form>
 
         <div id="results">
+
+            <button type="button" class="btn btn-light" id="prev">Previous Results</button>
+            <button type="button" class="btn btn-dark" id="next">More Results</button>
 
             <div class="card-columns">
 
