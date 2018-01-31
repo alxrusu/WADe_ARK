@@ -45,7 +45,7 @@
           rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
-		if (clothing.length > 0) {
+		if (rows.length > 0) {
 			dataTable.addRows(rows);
 			chart.draw(dataTable);
 		}
