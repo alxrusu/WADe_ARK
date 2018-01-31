@@ -97,10 +97,12 @@
 				  {% if res.Picture %}
                     <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
 				  {% endif %}
-                  <div class="card-body text-center">
-                    <h5 class="card-title">{{ res.Name }}</h5>
-                    <a href="movement/?name={{ res }}" class="btn btn-link">View Page</a>
-                  </div>
+                  <a href="movement/?name={{ res }}">
+                    <div class="card-body text-center">
+                      <h5 class="card-title">{{ res.Name }}</h5>
+                      <p class="btn btn-link">View Page</p>
+                    </div>
+                  </a>
                 </div>
               {% endfor %}
 
