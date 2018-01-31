@@ -86,6 +86,8 @@ def view_artist(request):
     print(name)
     r = sparql_service.get_artist(name)
     context["results"] = r
+    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'],te=r['DeathDate'])
+    context["depth"] = r2
     return render(request, 'arkapp/artist.html', context)
 
 

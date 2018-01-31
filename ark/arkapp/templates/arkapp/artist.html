@@ -18,6 +18,38 @@
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
     <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['timeline']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var container = document.getElementById('vizualize');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Artist' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+
+        // dataTable.addRows([
+        //   [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
+        //   [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
+        //   [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]]
+        //   );
+
+        rows = [];
+
+        {% for res in depth %}
+          rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+        {% endfor %}
+
+        dataTable.addRows(rows);
+
+        chart.draw(dataTable);
+      }
+    </script>
    
   </head>
 
@@ -32,6 +64,7 @@
 
       <!-- Page Content -->
       <div class="container">
+        
         <div id="results">
           <h3>{{ results.Name }}</h3>
           <br>
@@ -54,24 +87,6 @@
             <br>
             <h3>Artworks</h3>
             <div class="card-columns">
-              <!-- <div class="card">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">Card title that wraps to a new line</h5>
-                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-              </div> -->
-
-              <!-- <div class="card p-3">
-                <blockquote class="blockquote mb-0 card-body">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer class="blockquote-footer">
-                    <small class="text-muted">
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
 
               {% for res in results.Artworks %}
                 <div class="card">
@@ -84,48 +99,12 @@
                 </div>
               {% endfor %}
 
-              <!-- <div class="card bg-primary text-white text-center p-3">
-                <blockquote class="blockquote mb-0">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat.</p>
-                  <footer class="blockquote-footer">
-                    <small>
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
-
-              <!-- <div class="card text-center">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div> -->
-
-              <!-- <div class="card">
-                <img class="card-img" src="..." alt="Card image">
-              </div>
-              <div class="card p-3 text-right">
-                <blockquote class="blockquote mb-0">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer class="blockquote-footer">
-                    <small class="text-muted">
-                      Someone famous in <cite title="Source Title">Source Title</cite>
-                    </small>
-                  </footer>
-                </blockquote>
-              </div> -->
-
-              <!-- <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div> -->
-
             </div>
+
+            <br>
+            <h3> Vizualize </h3>
+
+            <div id="vizualize" style="height: 500px;"></div>
 
         </div>
 
