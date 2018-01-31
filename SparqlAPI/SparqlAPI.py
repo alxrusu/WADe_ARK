@@ -4,7 +4,6 @@ from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 from adnotations import artist_adnotation, artist_list_adnotation,\
     movement_list_adnotation, artwork_adnotation, movement_adnotation,\
     artwork_list_adnotation
-from gevent.wsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -634,5 +633,5 @@ FILTER (lang(?MovementLabel) = "en").\n"""
 
 
 if __name__ == '__main__':
-    http_server = WSGIServer(('', 5000), app)
-    http_server.serve_forever()
+    app.run(port=5000)
+    
