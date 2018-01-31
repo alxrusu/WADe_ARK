@@ -45,9 +45,10 @@
           rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
-        dataTable.addRows(rows);
-
-        chart.draw(dataTable);
+		if (clothing.length > 0) {
+			dataTable.addRows(rows);
+			chart.draw(dataTable);
+		}
 
         google.visualization.events.addListener(chart, 'select', selectHandler); 
 

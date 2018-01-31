@@ -70,44 +70,22 @@ class SparqlService:
         return int(date_str.split('-')[0])
 
     def get_artists_depth(self, ts=None, te=None):
-        url = self.url + '/artists'
+        url = self.url + '/artists/interval'
         if ts is None or te is None:
             return {}
-
-        payload = dict()
-
-        response = []
 
         ts = self._get_year(ts)
         te = self._get_year(te)
 
-        placed = dict()
-
-        for year in range(ts, te, 20):
-            # print(year)
-            res = requests.get(url, params={"year": year})
-            if res.status_code == 200:
-                try:
-                    r = res.json()['Artists']
-                except Exception:
-                    r = {}
-                for t in range(len(r)):
-                    if r[t]['Name'] not in placed:
-                        placed[r[t]['Name']] = 1
-                        artist = self.get_artist(r[t]['Name'])
-                        if len(artist) > 0:
-                            if 'Movements' in artist and 'BirthDate' in artist and 'DeathDate' in artist:
-                                movs = artist['Movements']
-                                movs = movs.split(', ')
-                                artist['BirthDate'] = self._get_year(
-                                    artist['BirthDate'])
-                                artist['DeathDate'] = self._get_year(
-                                    artist['DeathDate'])
-                                artist['Movements'] = movs
-                                # print(artist['BirthDate'])
-                                if artist['BirthDate'] > ts - 20 and artist['DeathDate'] < te + 20:
-                                    response.append(artist)
-        return response
+        payload = {
+            'start': ts,
+            'end': te,
+            'movements': True
+        }
+        try:
+            return requests.get(url, params=payload).json()['Artists']
+        except Exception as e:
+            return {}
 
     def get_artworks(self, name=None, author=None, limit=None, offset=None):
         values = {'name': name, 'author': author,
