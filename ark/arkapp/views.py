@@ -57,17 +57,20 @@ def index(request):
 @require_http_methods(["GET", "POST"])
 def movements(request):
     context = dict()
-    context['movements'] = sparql_service.get_movements()
+    # context['movements'] = sparql_service.get_movements()
     context['filters'] = []
+    context["results"] = []
+    name = None
     if request.method == "POST":
         if 'search' in request.POST:
             name = request.POST['search']
             if valid_string(name):
                 context['filters'].append(name)
-        r = sparql_service.get_movements(name=name)
-    else:
-        r = sparql_service.get_movements(name=None)
-    context["results"] = r
+    r = sparql_service.get_movements(name=name)
+    for ind in range(len(r)):
+        mov = sparql_service.get_movement(r[ind])
+        if len(mov) > 0:
+            context["results"].append(mov)
     return render(request, 'arkapp/movements.html', context)
 
 
