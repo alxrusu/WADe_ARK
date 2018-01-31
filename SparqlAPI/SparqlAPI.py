@@ -584,6 +584,10 @@ def getInterval():
         except ValueError:
             return "Invalid Parameters", 400
 
+    exception = None
+    if 'exception' in request.args:
+        exception = request.args["exception"]
+
     query = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
@@ -606,6 +610,9 @@ FILTER (?DeathDate < "%s-1-1"^^xsd:date).
         query += """?Artist dbo:movement ?Movement.
 ?Movement rdfs:label ?MovementLabel.
 FILTER (lang(?MovementLabel) = "en").\n"""
+
+    if exception:
+        query += """FILTER (?ArtistLabel != "%s"@en)""" % (exception)
 
     query += """} GROUP BY ?ArtistLabel ORDER BY ?RealBirthDate LIMIT 30"""
 

@@ -143,6 +143,7 @@ Params:
         end = interval end year
     [Optional]
         movements = should include movements (boolean), default False
+        exception = full english artist name to be skipped
 Return:
     400
         Invalid param
