@@ -29,6 +29,7 @@
         var chart = new google.visualization.Timeline(container);
         var dataTable = new google.visualization.DataTable();
 
+        dataTable.addColumn({ type: 'string', id: 'Term' });
         dataTable.addColumn({ type: 'string', id: 'Artist' });
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
@@ -42,13 +43,18 @@
         rows = [];
 
         {% for res in depth %}
-          rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+          rows.push(['{{ res.Name }}', '{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
-		if (rows.length > 0) {
-			dataTable.addRows(rows);
-			chart.draw(dataTable);
-		}
+
+        var options = {
+          timeline: { showRowLabels: false }
+        };
+
+        if (rows.length > 0) {
+          dataTable.addRows(rows);
+          chart.draw(dataTable, options);
+        }
 
         google.visualization.events.addListener(chart, 'select', selectHandler); 
 
