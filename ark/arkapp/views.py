@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .sparqlservice import SparqlService,\
     valid_string, valid_movement, valid_int
 
+import datetime
 
 sparql_service = SparqlService()
 
@@ -82,8 +83,12 @@ def view_artist(request):
     print(name)
     r = sparql_service.get_artist(name)
     context["results"] = r
-    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'], te=r['DeathDate'])
-    context["depth"] = r2
+    context["depth"] = []
+    if 'BirthDate' in r and valid_string(r['BirthDate']):
+        death_date = r.get('DeathDate', None)
+        birth_date = r['BirthDate']
+        r2 = sparql_service.get_artists_depth(ts=birth_date, te=death_date)
+        context["depth"] = r2
     context["movements"] = r["Movements"].split(", ")
     recommend = sparql_service.get_recommend_artist(name)
     context["recommend"] = recommend
