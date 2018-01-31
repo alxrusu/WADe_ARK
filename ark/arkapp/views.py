@@ -28,8 +28,10 @@ def index(request):
         movement = request.POST.get('movements')
         if valid_movement(movement):
             context['filters'].append(movement)
-
-        year = int(request.POST.get('year', '-1'))
+        try:
+            year = int(request.POST.get('year', '-1'))
+        except Exception:
+            year = 0
         if valid_int(year):
             context['filters'].append(year)
 

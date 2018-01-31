@@ -2,3 +2,4 @@
 SparqlAPI/.idea/*
 ark/.idea/*
 ark/.DS_Store
+*__pycache__*
