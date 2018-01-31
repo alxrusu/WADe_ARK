@@ -83,7 +83,18 @@ class SparqlService:
             'movements': True
         }
         try:
-            return requests.get(url, params=payload).json()['Artists']
+            r = requests.get(url, params=payload).json()
+            for ind in range(len(r)):
+                birthdate = self._get_year(r[ind]['BirthDate'])
+                deathdate = self._get_year(r[ind]['DeathDate'])
+                
+                if deathdate < birthdate:
+                    r[ind]['BirthDate'] = deathdate
+                    r[ind]['DeathDate'] = birthdate
+                else:
+                    r[ind]['BirthDate'] = birthdate
+                    r[ind]['DeathDate'] = deathdate
+            return r
         except Exception as e:
             return {}
 
