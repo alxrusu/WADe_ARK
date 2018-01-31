@@ -299,11 +299,7 @@ FILTER (lang(?AuthorLabel) = "en").
     return jsonify(response)
 
 
-@app.route('/artwork')
-def getArtwork():
-
-    if 'name' not in request.args or len(request.args) != 1:
-        return "Invalid Parameters", 400
+def queryArtwork(name):
 
     query = """
 select distinct ?Depiction ?AuthorLabel ?Year ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
@@ -335,7 +331,7 @@ optional {
 ?Painting dbo:abstract ?Abstract.
 FILTER (lang(?Abstract) = "en").
 }
-} Limit 1""" % (request.args['name'])
+} Limit 1""" % (name)
 
     try:
         sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -343,37 +339,148 @@ FILTER (lang(?Abstract) = "en").
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
     except QueryBadFormed as e:
-        return "Invalid Parameters", 400
+        return None
 
     if len(results["results"]["bindings"]) < 1:
-        return "No results", 400
+        return None
 
     result = results["results"]["bindings"][0]
-    response = dict()
-    response["Name"] = request.args["name"]
-    response["Picture"] = result["Depiction"]["value"]
-    response["Author"] = result["AuthorLabel"]["value"]
+    artwork = dict()
+    artwork["Name"] = name
+    artwork["Picture"] = result["Depiction"]["value"]
+    artwork["Author"] = result["AuthorLabel"]["value"]
     if "Year" in result:
-        response["Year"] = result["Year"]["value"]
+        artwork["Year"] = result["Year"]["value"]
     else:
-        response["Year"] = ""
-    response["Museum"] = ""
+        artwork["Year"] = ""
+    artwork["Museum"] = ""
     if "MuseumLabel" in result:
-        response["Museum"] += result["MuseumLabel"]["value"]
+        artwork["Museum"] += result["MuseumLabel"]["value"]
         if "CityLabel" in result:
-            response["Museum"] += ", "
+            artwork["Museum"] += ", "
     if "CityLabel" in result:
-        response["Museum"] += result["CityLabel"]["value"]
+        artwork["Museum"] += result["CityLabel"]["value"]
     if "Abstract" in result:
-        response["Abstract"] = result["Abstract"]["value"]
+        artwork["Abstract"] = result["Abstract"]["value"]
     else:
-        response["Abstract"] = ""
+        artwork["Abstract"] = ""
     if "Height" in result and "Width" in result:
-        response["Dimensions"] = "%s cm x %s cm" % (result["Height"]["value"], result["Width"]["value"])
+        artwork["Dimensions"] = "%s cm x %s cm" % (result["Height"]["value"], result["Width"]["value"])
     else:
-        response["Dimensions"] = ""
+        artwork["Dimensions"] = ""
+        
+    return artwork
+
+
+@app.route('/artwork')
+def getArtwork():
+
+    if 'name' not in request.args or len(request.args) != 1:
+        return "Invalid Parameters", 400
+
+    response = queryArtwork(request.args["name"])
+    if response is None:
+        return "No results", 400
 
     return jsonify(response)
+
+
+@app.route('/recommend')
+def getRecommend():
+
+    if 'name' not in request.args or len(request.args) != 1:
+        return "Invalid Parameters", 400
+
+    artwork = queryArtwork(request.args["name"])
+    if artwork is None:
+        return "No results", 400
+
+    recommend = dict()
+
+    queries = ["""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?AuthorLabel ?PaintingLabel ?Depiction where {
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+?Painting rdfs:label ?PaintingLabel.
+?Painting foaf:depiction ?Depiction.
+?Painting dbo:author ?Author.
+?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Author rdfs:label ?AuthorLabel.
+FILTER (lang(?PaintingLabel) = "en").
+FILTER (?AuthorLabel = "%s"@en).
+""" % (artwork["Author"]),
+
+"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?AuthorLabel ?PaintingLabel ?Depiction where {
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+?Painting rdfs:label ?PaintingLabel.
+?Painting foaf:depiction ?Depiction.
+?Painting dbo:author ?Author.
+?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Author rdfs:label ?AuthorLabel.
+FILTER (lang(?PaintingLabel) = "en").
+FILTER (lang(?AuthorLabel) = "en").
+?MyAuthor <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?MyAuthor rdfs:label ?MyAuthorLabel.
+FILTER (?MyAuthorLabel = "%s"@en).
+FILTER (?Author != ?MyAuthor)
+?MyAuthor dbo:birthPlace ?MyBirthPlace.
+?Author dbo:birthPlace ?BirthPlace.
+?MyBirthPlace dbo:country ?Country.
+?BirthPlace dbo:country ?Country.
+""" % (artwork["Author"]),
+
+"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?AuthorLabel ?PaintingLabel ?Depiction where {
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+?Painting rdfs:label ?PaintingLabel.
+?Painting foaf:depiction ?Depiction.
+?Painting dbo:author ?Author.
+?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Author rdfs:label ?AuthorLabel.
+FILTER (lang(?PaintingLabel) = "en").
+FILTER (lang(?AuthorLabel) = "en").
+?MyAuthor <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?MyAuthor rdfs:label ?MyAuthorLabel.
+FILTER (?MyAuthorLabel = "%s"@en).
+FILTER (?Author != ?MyAuthor).
+?MyAuthor dbo:movement ?Movement.
+?Author dbo:movement ?Movement.
+""" % (artwork["Author"]),
+
+    ]
+
+    for query in queries:
+
+        try:
+            year = int(artwork["Year"])
+            query += "?Painting dbp:year ?Year.\nFILTER (datatype(?Year) = xsd:integer).\n} ORDER BY abs(?Year-%d) LIMIT 5" % (year)
+        except ValueError:
+            query += "} ORDER BY abs(?Year-%s) LIMIT 5"
+
+        print (query)
+        try:
+            sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+            sparql.setQuery (query)
+            sparql.setReturnFormat(JSON)
+            results = sparql.query().convert()
+        except QueryBadFormed as e:
+            return "Invalid Parameters", 400
+
+        for result in results["results"]["bindings"]:
+            entity = dict()
+            entity["Name"] = result["PaintingLabel"]["value"]
+            entity["Picture"] = result["Depiction"]["value"]
+            entity["Author"] = result["AuthorLabel"]["value"]
+            recommend[entity["Name"]] = entity
+
+    recommend.pop(artwork["Name"], None)
+    return jsonify(list(recommend.values()))
 
 
 if __name__ == '__main__':

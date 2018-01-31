@@ -170,4 +170,6 @@ def view_artwork(request):
     print(name)
     r = sparql_service.get_artwork(name)
     context["results"] = r
+    recommend = sparql_service.get_recommend(name)
+    context["recommend"] = recommend
     return render(request, 'arkapp/artwork.html', context)
