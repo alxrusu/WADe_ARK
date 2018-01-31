@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^591xji9=3#v&y8)%8sj3y7=ftki$f9x57ndah6udbkvqpmstt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['wadeark.appspot.com', 'localhost', '127.0.0.1']
 

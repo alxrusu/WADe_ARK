@@ -4,8 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .preprocessing import valid_string, valid_movement, valid_int
 from .sparqlservice import SparqlService
 
-import datetime
-
 sparql_service = SparqlService()
 
 
