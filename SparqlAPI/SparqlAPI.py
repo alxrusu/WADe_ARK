@@ -38,9 +38,10 @@ FILTER (lang(?Description) = "en").
         elif key == 'movement':
             query += """?Artist dbo:movement ?Movement.\n?Movement rdfs:label "%s"@en\n""" % (request.args[key])
         elif key == 'year':
-            query += """?Artist dbo:birthDate ?BirthDate.\n?Artist dbo:deathDate ?DeathDate.
-FILTER (?BirthDate < "%s-01-01"^^xsd:date)
-FILTER (?DeathDate > "%s-01-01"^^xsd:date)\n""" % (request.args[key], request.args[key])
+            query += """?Artist dbo:birthDate ?BirthDate.
+?Artist dbo:deathDate ?DeathDate.
+FILTER (?BirthDate < "%s-1-1"^^xsd:date)
+FILTER (?DeathDate > "%s-1-1"^^xsd:date)\n""" % (request.args[key], request.args[key])
         else:
             return "Unknown Parameter", 400
 
@@ -83,9 +84,13 @@ MIN(?BirthDate) as ?RealBirthDate MIN(?DeathDate) as ?RealDeathDate where {
 ?Artist rdfs:label "%s"@en.
 ?Artist foaf:depiction ?Depiction.
 ?Artist dbo:abstract ?Abstract.
-?Artist dbo:birthDate ?BirthDate.
-?Artist dbo:deathDate ?DeathDate.
 FILTER (lang(?Abstract) = "en").
+OPTIONAL {
+?Artist dbo:birthDate ?BirthDate.
+}.
+OPTIONAL {
+?Artist dbo:deathDate ?DeathDate.
+}.
 OPTIONAL {
 ?Artist dbo:movement ?Movement.
 ?Movement rdfs:label ?MovementLabel.
@@ -113,8 +118,14 @@ FILTER (lang(?MovementLabel) = "en").
     response["Name"] = request.args["name"]
     response["Picture"] = result["Depiction"]["value"]
     response["Abstract"] = result["Abstract"]["value"]
-    response["BirthDate"] = result["RealBirthDate"]["value"]
-    response["DeathDate"] = result["RealDeathDate"]["value"]
+    if "RealBirthDate" in result:
+        response["BirthDate"] = result["RealBirthDate"]["value"]
+    else:
+        response["BirthDate"] = ""
+    if "RealDeathDate" in result:
+        response["DeathDate"] = result["RealDeathDate"]["value"]
+    else:
+        response["DeathDate"] = ""
     response["Movements"] = result["Movements"]["value"]
     response["Artworks"] = artworks
 
@@ -555,6 +566,67 @@ FILTER (?Artist != ?MyArtist).
             recommend[entity["Name"]] = entity
 
     return jsonify(list(recommend.values()))
+
+
+@app.route('/artists/interval')
+def getInterval():
+
+    if 'start' not in request.args or 'end' not in request.args:
+        return "Invalid Parameters", 400
+
+    movements = False
+    if 'movements' in request.args:
+        try:
+            movements = bool(request.args["movements"])
+        except ValueError:
+            return "Invalid Parameters", 400
+
+    query = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?ArtistLabel MIN(?BirthDate) as ?RealBirthDate MIN(?DeathDate) as ?RealDeathDate """
+
+    if movements:
+        query += """(group_concat(DISTINCT ?MovementLabel; separator = ", ") as ?Movements) """
+
+    query += """where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist rdfs:label ?ArtistLabel.
+FILTER (lang(?ArtistLabel) = "en").
+?Artist dbo:birthDate ?BirthDate.
+?Artist dbo:deathDate ?DeathDate.
+FILTER (?BirthDate > "%s-1-1"^^xsd:date).
+FILTER (?DeathDate < "%s-1-1"^^xsd:date).
+""" % (request.args["start"], request.args["end"])
+
+    if movements:
+        query += """?Artist dbo:movement ?Movement.
+?Movement rdfs:label ?MovementLabel.
+FILTER (lang(?MovementLabel) = "en").\n"""
+
+    query += """} GROUP BY ?ArtistLabel ORDER BY ?RealBirthDate LIMIT 30"""
+
+    print(query)
+    try:
+        sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+    except QueryBadFormed as e:
+        return "Invalid Parameters", 400
+
+    response = list()
+
+    for result in results["results"]["bindings"]:
+        entity = dict()
+        entity["Name"] = result["ArtistLabel"]["value"]
+        entity["BirthDate"] = result["RealBirthDate"]["value"]
+        entity["DeathDate"] = result["RealDeathDate"]["value"]
+        if movements:
+            entity["Movements"] = result["Movements"]["value"]
+        response.append(entity)
+
+    return jsonify(response)
 
 
 if __name__ == '__main__':
