@@ -5,8 +5,6 @@ from .preprocessing import valid_string, valid_movement, valid_int,\
     get_post_params
 from .sparqlservice import SparqlService
 
-import datetime
-
 sparql_service = SparqlService()
 
 
