@@ -76,7 +76,7 @@
     <div class="wrapper">
 
       <!-- Page Content -->
-      <div class="container">
+      <div class="container text-center">
         <a class="btn btn-info navbar-btn text-white" href="/ark">
             Artists
         </a>
@@ -102,10 +102,18 @@
                 <i class="fa fa-search fa-2x"></i>
               </button>
           </div>
+		  
+		  <div class="input-group mb-3 w-100">
+            {% if more.year %}
+              <input type="number" name="year" class="form-control" value="{{ more.year }}" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
+            {% else %}
+              <input type="number" id="yearInput" name="year" class="form-control" placeholder="Artist year" aria-label="" aria-describedby="basic-addon1">
+            {% endif %}
+          </div>
 
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="inputGroupSelect01">Movements</label>
+              <label class="input-group-text bg-light" for="inputGroupSelect01">Movements</label>
             </div>
             <select class="custom-select" name="movements" id="inputGroupSelect01">
                   {% if more.movement %}
@@ -118,17 +126,6 @@
                     <option value="{{ mov }}">{{ mov.Name }}</option>
                   {% endfor %}
             </select>
-          </div>
-
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="inputGroupSelect01">Year</label>
-            </div>
-            {% if more.year %}
-              <input type="number" name="year" class="form-control" value="{{ more.year }}" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
-            {% else %}
-              <input type="number" name="year" class="form-control" placeholder="Number" aria-label="" aria-describedby="basic-addon1">
-            {% endif %}
           </div>
 
           <div class="filters w-100">

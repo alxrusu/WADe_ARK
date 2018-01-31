@@ -49,6 +49,8 @@ def index(request):
         context["more"]["year"] = year
     if offset is not None:
         context["more"]["offset"] = offset
+    else:
+        context["more"]["offset"] = 0
 
     return render(request, 'arkapp/index.html', context)
 
