@@ -50,8 +50,9 @@ a, a:hover, a:focus {
 
 .search-custom {
 	/*float: left;*/
-	margin: 0;
-	margin-top: 5;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 5px;
 	margin-bottom: 50px;
 }
 
