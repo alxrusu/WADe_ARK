@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .sparqlservice import SparqlService,\
-    valid_string, valid_movement, valid_int
+from .preprocessing import valid_string, valid_movement, valid_int,\
+    get_post_params
+from .sparqlservice import SparqlService
 
+import datetime
 
 sparql_service = SparqlService()
 
@@ -36,7 +38,10 @@ def index(request):
         if valid_int(year):
             context['filters'].append(year)
 
-        offset = max(int(request.POST.get('offset', '-1')), 0)
+        try:
+            offset = max(int(request.POST.get('offset', '-1')), 0)
+        except Exception:
+            offset = 0
 
     context["results"] = sparql_service.search_artists(
         name, movement, year, limit=limit, offset=offset)
@@ -62,7 +67,7 @@ def movements(request):
     context = dict()
     # context['movements'] = sparql_service.get_movements()
     context['filters'] = []
-    
+
     name = None
     if request.method == "POST":
         if 'search' in request.POST:
@@ -82,8 +87,12 @@ def view_artist(request):
     print(name)
     r = sparql_service.get_artist(name)
     context["results"] = r
-    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'], te=r['DeathDate'])
-    context["depth"] = r2
+    context["depth"] = []
+    if 'BirthDate' in r and valid_string(r['BirthDate']):
+        death_date = r.get('DeathDate', None)
+        birth_date = r['BirthDate']
+        r2 = sparql_service.get_artists_depth(ts=birth_date, te=death_date)
+        context["depth"] = r2
     context["movements"] = r["Movements"].split(", ")
     recommend = sparql_service.get_recommend_artist(name)
     context["recommend"] = recommend
@@ -93,11 +102,7 @@ def view_artist(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def view_movement(request):
-    context = dict()
-    name = request.GET['name']
-    print(name)
-    r = sparql_service.get_movement(name)
-    context["results"] = r
+    context = {"results": sparql_service.get_movement(request.GET['name'])}
     return render(request, 'arkapp/movement.html', context)
 
 
@@ -113,16 +118,15 @@ def vizualize(request):
         year = None
         limit = None
         offset = None
-        if 'search' in request.POST:
-            name = request.POST['search']
-            if name is not None:
-                if isinstance(name, str) is True and len(name) > 0:
-                    context['filters'].append(name)
-        if 'movements' in request.POST:
-            movement = request.POST['movements']
-            if movement is not None:
-                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
-                    context['filters'].append(movement)
+
+        name = request.POST.get('search')
+        if valid_string(name):
+            context['filters'].append(name)
+
+        movement = request.POST.get('movements')
+        if valid_movement(movement):
+            context['filters'].append(movement)
+
         if 'year' in request.POST:
             year = request.POST['year']
             if year is not None:

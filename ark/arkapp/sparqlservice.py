@@ -1,22 +1,7 @@
 import requests
-
-
-def valid_int(f):
-    return f is not None and isinstance(f, int) and f > 0
-
-
-def valid_string(f):
-    return f is not None and isinstance(f, str) and len(f) > 0
-
-
-def valid_movement(f):
-    return valid_string(f) and f != 'All'
-
-
-def inflate_payload(fields, values):
-    return {field: values[field]
-            for field, valid in fields.items()
-            if valid(values[field])}
+from .preprocessing import valid_int, valid_movement, valid_string, \
+    inflate_payload
+import datetime
 
 
 class SparqlService:
@@ -67,25 +52,62 @@ class SparqlService:
         return r
 
     def _get_year(self, date_str):
-        return int(date_str.split('-')[0])
+        if valid_string(date_str):
+            return int(date_str.split('-')[0])
+        raise Exception("Invalid date string")
 
     def get_artists_depth(self, ts=None, te=None):
         url = self.url + '/artists/interval'
-        if ts is None or te is None:
-            return {}
+        if ts is None:
+            return []
 
-        ts = self._get_year(ts)
-        te = self._get_year(te)
+        try:
+            ts = self._get_year(ts)
+        except Exception:
+            return []
+
+        try:
+            cyear = datetime.datetime.now().year
+            if te is None:
+                te = cyear
+            else:
+                te = self._get_year(te)
+        except Exception:
+            return []
+
+        if te < ts:
+            aux = ts
+            ts = te
+            te = aux
 
         payload = {
-            'start': ts,
-            'end': te,
+            'start': ts - 20,
+            'end': te + 20,
             'movements': True
         }
         try:
-            return requests.get(url, params=payload).json()['Artists']
+            r = requests.get(url, params=payload).json()
+            results = []
+            for ind in range(len(r)):
+                if 'BirthDate' in r[ind]:
+                    birthdate = self._get_year(r[ind]['BirthDate'])
+                    if 'DeathDate' in r[ind]:
+                        deathdate = self._get_year(r[ind]['DeathDate'])
+                    else:
+                        deathdate = cyear
+
+                    if deathdate < birthdate:
+                        r[ind]['BirthDate'] = deathdate
+                        r[ind]['DeathDate'] = birthdate
+                    else:
+                        r[ind]['BirthDate'] = birthdate
+                        r[ind]['DeathDate'] = deathdate
+
+                    if r[ind]['BirthDate'] <= te and r[ind]['DeathDate'] >= ts:
+                        results.append(r[ind])
+            return results
         except Exception as e:
-            return {}
+            return []
 
     def get_artworks(self, name=None, author=None, limit=None, offset=None):
         values = {'name': name, 'author': author,
