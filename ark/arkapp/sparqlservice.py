@@ -28,7 +28,7 @@ class SparqlService:
     def search_artists(self, name=None, movement=None, year=None, limit=None, offset=None):
         values = {'name': name, 'movement': movement,
                   'year': year, 'limit': limit, 'offset': offset}
-        url = self.url + '/artists'
+        url = self.url + '/artists' 
         payload = inflate_payload(self.valid_artist_fields, values)
         try:
             return requests.get(url, params=payload).json()['Artists']

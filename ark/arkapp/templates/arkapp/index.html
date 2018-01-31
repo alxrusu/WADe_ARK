@@ -138,20 +138,20 @@
             
         </form>
 
-        <div id="results">
+        <div id="results" vocab="http://bib.schema.org/" typeof="CreativeWork" resource="Artists">
 
             <button type="button" class="btn btn-light" id="prev">Previous Results</button>
             <button type="button" class="btn btn-dark" id="next">More Results</button>
 
-            <div class="card-columns">
+            <div class="card-columns" property="Artists" typeof="ItemList" resource="List">
 
               {% for res in results %}
-                <div class="card">
-                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
-                  <a href="artist/?name={{ res.Name }}">
+                <div class="card" property="Artists" typeof="ListItem">
+                  <img class="card-img-top" property="Image" resource="{{ res.Picture }}" src="{{ res.Picture }}" alt="Card image cap">
+                  <a property="Query" href="artist/?name={{ res.Name }}">
                     <div class="card-body text-center">
-                      <h5 class="card-title">{{ res.Name }}</h5>
-                      <p class="card-text">{{ res.Description }}</p>
+                      <h5 class="card-title" property="name">{{ res.Name }}</h5>
+                      <p class="card-text" property="description">{{ res.Description }}</p>
                       <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
                       <p class="btn btn-link">View Page</p>
                     </div>
