@@ -46,9 +46,15 @@
           rows.push(['{{ res.Name }}', '{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
+        var height = 500
+        if (rows.length < 10) {
+          height= 200
+        }
 
         var options = {
-          timeline: { showRowLabels: false }
+          timeline: {
+            showRowLabels: false,
+            height: height }
         };
 
         if (rows.length > 0) {
@@ -125,7 +131,7 @@
             <br>
             <h3> Visualize </h3>
 
-            <div id="vizualize" style="height: 500px;"></div>
+            <div id="vizualize"></div>
 
             <br>
             <h3>Similar Artists</h3>
