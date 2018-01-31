@@ -31,8 +31,8 @@ Return:
             Name = full artist english name
             Picture = artist picture
             Abstract = long english description
-            BirthDate
-            DeathDate
+            BirthDate  (can be empty)
+            DeathDate  (can be empty)
             Movements = movements that influenced the artist (string)
             Artworks = list of JSON (max 6)
                 Author = full english artist name
@@ -132,3 +132,21 @@ Return:
             Name = full artist english name
             Picture = artist picture url
             Description = short english description
+
+/artists/interval
+GET
+Params:
+    [Mandatory]
+        start = interval start year
+        end = interval end year
+    [Optional]
+        movements = should include movements (boolean), default False
+Return:
+    400
+        Invalid param
+    200
+        list of JSON
+            Name = full artist english name
+            BirthDate
+            DeathDate
+            [Movements] only if movements param = True
