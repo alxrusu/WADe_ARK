@@ -20,7 +20,7 @@
     <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    
+
     <script type="text/javascript">
       google.charts.load('current', {'packages':['timeline']});
       google.charts.setOnLoadCallback(drawChart);
@@ -48,6 +48,13 @@
         dataTable.addRows(rows);
 
         chart.draw(dataTable);
+
+        google.visualization.events.addListener(chart, 'select', selectHandler); 
+
+        function selectHandler(e)     {   
+            // alert(data.getValue(chart.getSelection()[0].row, 0));
+            window.location = '/ark/artist/?name=' + dataTable.getValue(chart.getSelection()[0]['row'], 0);
+        }
       }
     </script>
    
