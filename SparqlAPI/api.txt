@@ -1,5 +1,8 @@
 /artists
 GET
+    The Available Artists endpoint returns a list of Artist matching,
+        if given, period, movement and/or artist name returning a
+        given maximum number of results, possibly offset.
 Params:
     [Optional]
         limit = maximum number of results
@@ -19,6 +22,7 @@ Return:
 
 /artist
 GET
+    Returns information about an artist given their name.
 Params:
     [Mandatory]
         name = full artist english name
@@ -40,39 +44,11 @@ Return:
                 Picture = artwork picture url
 
 
-/movements
-GET
-Params:
-    [Optional]
-        name = substring of movement name
-Return:
-    200
-        list of JSON
-            Name = full movement english name
-            Picture = suggestive picture url
-
-
-/movement
-GET
-Params:
-    [Mandatory]
-        name = full english movement name
-Return:
-    400
-        Invalid param
-        No results
-    200
-        JSON
-            Name = full movement english name
-            Abstract = long english description
-            Picture = suggestive picture url
-            Artists = list of JSON (max 6)
-                Name = full artist english name
-                Picture = artist picture url
-                Description = short english description
-
 /artworks
 GET
+    The Available Artworks endpoint returns a list of Artworks matching,
+        if given, title and/or author name returning a given maximum
+        number of results, possibly offset.
 Params:
     [Optional]
         limit = maximum number of results
@@ -88,8 +64,10 @@ Return:
             Name = full english artwork name
             Picture = artwork picture url
 
+
 /artwork
 GET
+    Returns information about an artwork given their name.
 Params:
     [Mandatory]
         name = full english artwork name
@@ -107,22 +85,46 @@ Return:
             Museum = current artwork location (can be empty)
             Dimensions = artwork dimensions (can be empty)
 
-/recommend/artwork
+
+/movements
 GET
+    The Available Movements endpoint returns a list of Movements matching,
+        if given, a name.
+Params:
+    [Optional]
+        name = substring of movement name
+Return:
+    200
+        list of JSON
+            Name = full movement english name
+            Picture = suggestive picture url
+
+
+/movement
+GET
+    Returns information about a movement given its name.
 Params:
     [Mandatory]
-        name = full english artwork name
+        name = full english movement name
 Return:
     400
         Invalid param
+        No results
     200
-        list of JSON
-            Author = full english artist name
-            Name = full english artwork name
-            Picture = artwork picture url
+        JSON
+            Name = full movement english name
+            Abstract = long english description
+            Picture = suggestive picture url
+            Artists = list of JSON (max 6)
+                Name = full artist english name
+                Picture = artist picture url
+                Description = short english description
+
 
 /recommend/artist
 GET
+    The Available Recommendations endpoint returns a list of Artist related
+        to a given one.
 Params:
     [Mandatory]
         name = full english artist name
@@ -135,8 +137,28 @@ Return:
             Picture = artist picture url
             Description = short english description
 
+
+/recommend/artwork
+GET
+    The Available Recommendations endpoint returns a list of Artworks related
+        to a given one.
+Params:
+    [Mandatory]
+        name = full english artwork name
+Return:
+    400
+        Invalid param
+    200
+        list of JSON
+            Author = full english artist name
+            Name = full english artwork name
+            Picture = artwork picture url
+
+
 /artists/interval
 GET
+    The Available Artists endpoint returns a list of Artist who lived
+        in the given time interval.
 Params:
     [Mandatory]
         start = interval start year
