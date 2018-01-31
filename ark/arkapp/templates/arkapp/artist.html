@@ -29,6 +29,7 @@
         var chart = new google.visualization.Timeline(container);
         var dataTable = new google.visualization.DataTable();
 
+        dataTable.addColumn({ type: 'string', id: 'Term' });
         dataTable.addColumn({ type: 'string', id: 'Artist' });
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
@@ -42,13 +43,25 @@
         rows = [];
 
         {% for res in depth %}
-          rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+          rows.push(['{{ res.Name }}', '{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
-		if (rows.length > 0) {
-			dataTable.addRows(rows);
-			chart.draw(dataTable);
-		}
+        var height = 500;
+        if (rows.length < 10) {
+          height = 200;
+        }
+
+        var options = {
+          timeline: {
+            showRowLabels: false
+          },
+          height: height
+        };
+
+        if (rows.length > 0) {
+          dataTable.addRows(rows);
+          chart.draw(dataTable, options);
+        }
 
         google.visualization.events.addListener(chart, 'select', selectHandler); 
 
@@ -117,9 +130,9 @@
             </div>
 
             <br>
-            <h3> Vizualize </h3>
+            <h3> Visualize </h3>
 
-            <div id="vizualize" style="height: 500px;"></div>
+            <div id="vizualize" ></div>
 
             <br>
             <h3>Similar Artists</h3>
