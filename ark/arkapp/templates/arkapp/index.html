@@ -16,8 +16,7 @@
     <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     
-    <script type="text/javascript" src="{% static 'arkapp/js/index.js'%}"></script>
-    <script>
+    <script type="text/javascript">
       $(document).ready(function() {
         $('#searchinput').keyup(function() {
           $('#searchclear').toggle(Boolean($(this).val()));
