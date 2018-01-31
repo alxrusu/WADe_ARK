@@ -31,7 +31,8 @@ def index(request):
         try:
             year = int(request.POST.get('year', '-1'))
         except Exception:
-            year = 0
+            year = None
+
         if valid_int(year):
             context['filters'].append(year)
 

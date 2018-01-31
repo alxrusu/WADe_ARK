@@ -2,7 +2,7 @@ import requests
 
 
 def valid_int(f):
-    return f is not None and isinstance(f, int) and f > 0,
+    return f is not None and isinstance(f, int) and f > 0
 
 
 def valid_string(f):
