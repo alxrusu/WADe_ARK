@@ -4,6 +4,7 @@ import requests
 class SparqlService:
     def __init__(self):
         self.url = "https://sparqlapi-dot-wadeark.appspot.com"
+        # self.url = "http://127.0.0.1:5000"
 
     def search_artists(self, name=None, movement=None, year=None, limit=None, offset=None):
         url = self.url + '/artists'
