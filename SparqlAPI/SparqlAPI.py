@@ -164,7 +164,7 @@ def getMovements():
     query = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
-select distinct ?MovementLabel as ?Label where {
+select distinct ?MovementLabel as ?Label ?Depiction where {
 ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
 ?Painting dbo:author ?Artist.
 ?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
@@ -188,7 +188,10 @@ FILTER (lang(?MovementLabel) = "en").
     response = list()
 
     for result in results["results"]["bindings"]:
-        response.append(result["Label"]["value"])
+        entity = dict()
+        entity["Name"] = result["Label"]["value"]
+        entity["Picture"] = result["Depiction"]["value"]
+        response.append(entity)
 
     return jsonify(movement_list_adnotation(response))
 

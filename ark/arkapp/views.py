@@ -5,6 +5,8 @@ from .preprocessing import valid_string, valid_movement, valid_int,\
     get_post_params
 from .sparqlservice import SparqlService
 
+import datetime
+
 sparql_service = SparqlService()
 
 
@@ -31,7 +33,8 @@ def index(request):
         try:
             year = int(request.POST.get('year', '-1'))
         except Exception:
-            year = 0
+            year = None
+
         if valid_int(year):
             context['filters'].append(year)
 
@@ -52,6 +55,8 @@ def index(request):
         context["more"]["year"] = year
     if offset is not None:
         context["more"]["offset"] = offset
+    else:
+        context["more"]["offset"] = 0
 
     return render(request, 'arkapp/index.html', context)
 
@@ -62,7 +67,7 @@ def movements(request):
     context = dict()
     # context['movements'] = sparql_service.get_movements()
     context['filters'] = []
-    context["results"] = []
+
     name = None
     if request.method == "POST":
         if 'search' in request.POST:
@@ -70,10 +75,7 @@ def movements(request):
             if valid_string(name):
                 context['filters'].append(name)
     r = sparql_service.get_movements(name=name)
-    for ind in range(len(r)):
-        mov = sparql_service.get_movement(r[ind])
-        if len(mov) > 0:
-            context["results"].append(mov)
+    context["results"] = r
     return render(request, 'arkapp/movements.html', context)
 
 
@@ -85,8 +87,13 @@ def view_artist(request):
     print(name)
     r = sparql_service.get_artist(name)
     context["results"] = r
-    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'], te=r['DeathDate'])
-    context["depth"] = r2
+    context["depth"] = []
+    if 'BirthDate' in r and valid_string(r['BirthDate']):
+        death_date = r.get('DeathDate', None)
+        birth_date = r['BirthDate']
+        r2 = sparql_service.get_artists_depth(ts=birth_date, te=death_date)
+        context["depth"] = r2
+    context["movements"] = r["Movements"].split(", ")
     recommend = sparql_service.get_recommend_artist(name)
     context["recommend"] = recommend
     return render(request, 'arkapp/artist.html', context)

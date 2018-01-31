@@ -45,9 +45,10 @@
           rows.push(['{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
         {% endfor %}
 
-        dataTable.addRows(rows);
-
-        chart.draw(dataTable);
+		if (rows.length > 0) {
+			dataTable.addRows(rows);
+			chart.draw(dataTable);
+		}
 
         google.visualization.events.addListener(chart, 'select', selectHandler); 
 
@@ -82,7 +83,14 @@
             <h5>Died : {{ results.DeathDate }} </h5>
           {% endif %}
           {% if results.Movements %}
-            <h5>Movements : {{ results.Movements }}</h5>
+            <h5>Movements :
+                {% for mov in movements %}
+                    <a href="/ark/movements/movement/?name={{ mov }}"> {{ mov }} </a>
+                    {% if not forloop.last %}
+                        ,
+                    {% endif %}
+                {% endfor %}
+            </h5>
           {% endif %}
           <br>
 
