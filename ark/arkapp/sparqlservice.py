@@ -146,6 +146,21 @@ class SparqlService:
             return {}
         return r
 
+    def get_recommend_artist(self, name):
+        url = self.url + '/recommend/artist'
+        payload = {
+            "name": name
+        }
+        res = requests.get(url, params=payload)
+        # print(res.status_code)
+        if res.status_code == 400:
+            return {}
+        try:
+            r = res.json()
+        except Exception:
+            return {}
+        return r
+
     def get_artwork(self, name):
         url = self.url + '/artwork'
         payload = {
@@ -161,8 +176,8 @@ class SparqlService:
             return {}
         return r
 
-    def get_recommend(self, name):
-        url = self.url + '/recommend'
+    def get_recommend_artwork(self, name):
+        url = self.url + '/recommend/artwork'
         payload = {
             "name": name
         }

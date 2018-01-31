@@ -88,6 +88,8 @@ def view_artist(request):
     context["results"] = r
     r2 = sparql_service.get_artists_depth(ts=r['BirthDate'],te=r['DeathDate'])
     context["depth"] = r2
+    recommend = sparql_service.get_recommend_artist(name)
+    context["recommend"] = recommend
     return render(request, 'arkapp/artist.html', context)
 
 
@@ -186,6 +188,6 @@ def view_artwork(request):
     print(name)
     r = sparql_service.get_artwork(name)
     context["results"] = r
-    recommend = sparql_service.get_recommend(name)
+    recommend = sparql_service.get_recommend_artwork(name)
     context["recommend"] = recommend
     return render(request, 'arkapp/artwork.html', context)

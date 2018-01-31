@@ -90,7 +90,7 @@ Return:
 GET
 Params:
     [Mandatory]
-        name = full english artowork name
+        name = full english artwork name
 Return:
     400
         Invalid param
@@ -104,3 +104,31 @@ Return:
             Abstract = long english description (can be empty)
             Museum = current artwork location (can be empty)
             Dimensions = artwork dimensions (can be empty)
+
+/recommend/artwork
+GET
+Params:
+    [Mandatory]
+        name = full english artwork name
+Return:
+    400
+        Invalid param
+    200
+        list of JSON
+            Author = full english artist name
+            Name = full english artwork name
+            Picture = artwork picture url
+
+/recommend/artist
+GET
+Params:
+    [Mandatory]
+        name = full english artist name
+Return:
+    400
+        Invalid param
+    200
+        list of JSON
+            Name = full artist english name
+            Picture = artist picture url
+            Description = short english description

@@ -385,8 +385,8 @@ def getArtwork():
     return jsonify(response)
 
 
-@app.route('/recommend')
-def getRecommend():
+@app.route('/recommend/artwork')
+def getRecommendArtwork():
 
     if 'name' not in request.args or len(request.args) != 1:
         return "Invalid Parameters", 400
@@ -451,8 +451,7 @@ FILTER (?MyAuthorLabel = "%s"@en).
 FILTER (?Author != ?MyAuthor).
 ?MyAuthor dbo:movement ?Movement.
 ?Author dbo:movement ?Movement.
-""" % (artwork["Author"]),
-
+""" % (artwork["Author"])
     ]
 
     for query in queries:
@@ -480,6 +479,78 @@ FILTER (?Author != ?MyAuthor).
             recommend[entity["Name"]] = entity
 
     recommend.pop(artwork["Name"], None)
+    return jsonify(list(recommend.values()))
+
+
+@app.route('/recommend/artist')
+def getRecommendArtist():
+
+    if 'name' not in request.args or len(request.args) != 1:
+        return "Invalid Parameters", 400
+
+    recommend = dict()
+
+    queries = ["""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?ArtistLabel ?Depiction ?Description where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist rdfs:label ?ArtistLabel.
+?Artist foaf:depiction ?Depiction.
+?Artist dct:description ?Description.
+?Painting dbo:author ?Artist.
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+FILTER (lang(?ArtistLabel) = "en").
+FILTER (lang(?Description) = "en").
+?MyArtist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?MyArtist rdfs:label ?MyArtistLabel.
+FILTER (?MyArtistLabel = "%s"@en).
+FILTER (?Artist != ?MyArtist).
+?MyArtist dbo:birthPlace ?MyBirthPlace.
+?Artist dbo:birthPlace ?BirthPlace.
+?MyBirthPlace dbo:country ?Country.
+?BirthPlace dbo:country ?Country.
+} LIMIT 6""" % (request.args["name"]),
+
+"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+select distinct ?ArtistLabel ?Depiction ?Description where {
+?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?Artist rdfs:label ?ArtistLabel.
+?Artist foaf:depiction ?Depiction.
+?Artist dct:description ?Description.
+?Painting dbo:author ?Artist.
+?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+FILTER (lang(?ArtistLabel) = "en").
+FILTER (lang(?Description) = "en").
+?MyArtist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+?MyArtist rdfs:label ?MyArtistLabel.
+FILTER (?MyArtistLabel = "%s"@en).
+FILTER (?Artist != ?MyArtist).
+?MyArtist dbo:movement ?Movement.
+?Artist dbo:movement ?Movement.
+} LIMIT 6""" % (request.args["name"])
+    ]
+
+    for query in queries:
+
+        print (query)
+        try:
+            sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+            sparql.setQuery (query)
+            sparql.setReturnFormat(JSON)
+            results = sparql.query().convert()
+        except QueryBadFormed as e:
+            return "Invalid Parameters", 400
+
+        for result in results["results"]["bindings"]:
+            entity = dict()
+            entity["Name"] = result["ArtistLabel"]["value"]
+            entity["Picture"] = result["Depiction"]["value"]
+            entity["Description"] = result["Description"]["value"]
+            recommend[entity["Name"]] = entity
+
     return jsonify(list(recommend.values()))
 
 

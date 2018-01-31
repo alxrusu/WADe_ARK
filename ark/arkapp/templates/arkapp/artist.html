@@ -113,6 +113,22 @@
 
             <div id="vizualize" style="height: 500px;"></div>
 
+            <br>
+            <h3>Similar Artists</h3>
+            <div class="card-columns">
+                {% for res in recommend %}
+                <div class="card">
+                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ res.Name }}</h5>
+                    <p class="card-text">{{ res.Description }}</p>
+                    <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+
         </div>
 
         
