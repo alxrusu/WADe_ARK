@@ -98,10 +98,10 @@
               {% for res in results.Artworks %}
                 <div class="card">
                   <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
-                  <div class="card-body">
+                  <div class="card-body text-center">
                     <h5 class="card-title">{{ res.Name }}</h5>
                     <p class="card-text">{{ res.Author }}</p>
-                    <a href="/ark/artwork/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                    <a href="/ark/artwork/?name={{ res.Name }}" class="btn btn-link">View Page</a>
                   </div>
                 </div>
               {% endfor %}
@@ -119,10 +119,10 @@
                 {% for res in recommend %}
                 <div class="card">
                   <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
-                  <div class="card-body">
+                  <div class="card-body text-center">
                     <h5 class="card-title">{{ res.Name }}</h5>
                     <p class="card-text">{{ res.Description }}</p>
-                    <a href="/ark/artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                    <a href="/ark/artist/?name={{ res.Name }}" class="btn btn-link">View Page</a>
                   </div>
                 </div>
               {% endfor %}
