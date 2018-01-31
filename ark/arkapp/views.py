@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .preprocessing import valid_string, valid_movement, valid_int,\
-    get_post_params
+from .preprocessing import valid_string, valid_movement, valid_int
 from .sparqlservice import SparqlService
 
 sparql_service = SparqlService()
@@ -74,6 +73,7 @@ def movements(request):
                 context['filters'].append(name)
     r = sparql_service.get_movements(name=name)
     context["results"] = r
+    print(r)
     return render(request, 'arkapp/movements.html', context)
 
 
@@ -84,6 +84,10 @@ def view_artist(request):
     name = request.GET['name']
     print(name)
     r = sparql_service.get_artist(name)
+    print(r)
+    if len(r) == 0:
+        return render(request, 'arkapp/not_found.html', context)
+
     context["results"] = r
     context["depth"] = []
     if 'BirthDate' in r and valid_string(r['BirthDate']):

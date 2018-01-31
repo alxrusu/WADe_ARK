@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+
+    {% load font_awesome %}
+
+    {% fa_css %}
+
+    {% load static %}
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#searchinput').keyup(function() {
+          $('#searchclear').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear').toggle(Boolean($("#searchinput").val()));
+        $('#searchclear').click(function() {
+          $('#searchinput').val('').focus();
+          $(this).hide();
+        });
+      });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+          $('#sidebarCollapse').on('click', function () {
+              $('#sidebar').toggleClass('active');
+          });
+      });
+    </script>
+
+    <script type="text/javascript">
+
+      $(document).ready(function(){
+        var backval = parseInt("{{more.offset}}") - 15;
+    
+        var nextval = parseInt("{{more.offset}}") + 15;
+
+        $("#prev").click(function(){
+          $( "#offset" ).val(backval);
+          $( "#target" ).submit();
+        });
+
+        $("#next").click(function(){
+          $( "#offset" ).val(nextval);
+          $( "#target" ).submit();
+        });
+
+        $("#search-btn").click(function(){
+          $( "#offset" ).val(0);
+          $( "#target" ).submit();
+        });
+
+      });
+    </script>
+  </head>
+
+
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+      </nav>
+
+    <div class="wrapper">
+
+      <!-- Page Content -->
+      <div class="container text-center">
+        <a class="btn btn-info navbar-btn text-white" href="/ark">
+            Artists
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/artworks">
+            Artworks
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/movements/">
+            Movements
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/vizualize/">
+            Vizualize
+        </a>
+        <br><br><br><br><br>
+        <h1>Page not found</h3>
+      </div>
+
+    </div> 
+  </body>
+</html>
