@@ -1,22 +1,6 @@
 import requests
-
-
-def valid_int(f):
-    return f is not None and isinstance(f, int) and f > 0,
-
-
-def valid_string(f):
-    return f is not None and isinstance(f, str) and len(f) > 0
-
-
-def valid_movement(f):
-    return valid_string(f) and f != 'All'
-
-
-def inflate_payload(fields, values):
-    return {field: values[field]
-            for field, valid in fields.items()
-            if valid(values[field])}
+from .preprocessing import valid_int, valid_movement, valid_string, \
+    inflate_payload
 
 
 class SparqlService:
