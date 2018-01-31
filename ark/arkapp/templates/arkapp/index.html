@@ -92,7 +92,7 @@
         
         <form id="target" method="post" class="form-inline w-100 search-custom" role="search">
           {% csrf_token %}
-          <div class="btn-group w-100">
+          <div class="btn-group mb-3 w-100">
               <input id="searchinput" type="search" name="search"
                      class="form-control bg-light w-100 form-control-lg search-input-custom"
                      placeholder="Search artists by name"
@@ -103,7 +103,7 @@
               </button>
           </div>
 
-          <div class="input-group mb-3">
+          <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Movements</label>
             </div>
@@ -115,7 +115,7 @@
                   {% endif %}
 
                   {% for mov in movements %}
-                    <option value="{{ mov }}">{{ mov }}</option>
+                    <option value="{{ mov }}">{{ mov.Name }}</option>
                   {% endfor %}
             </select>
           </div>
