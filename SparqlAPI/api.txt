@@ -47,7 +47,9 @@ Params:
         name = substring of movement name
 Return:
     200
-        list of string
+        list of JSON
+            Name = full movement english name
+            Picture = suggestive picture url
 
 
 /movement
