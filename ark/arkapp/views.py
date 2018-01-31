@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from .sparqlservice import SparqlService
+from .sparqlservice import SparqlService,\
+    valid_string, valid_movement, valid_int
 
 
 sparql_service = SparqlService()
@@ -20,30 +21,22 @@ def index(request):
     movement = None
     year = None
     if request.method == "POST":
-        if 'search' in request.POST:
-            name = request.POST['search']
-            if name is not None:
-                if isinstance(name, str) is True and len(name) > 0:
-                    context['filters'].append(name)
-        if 'movements' in request.POST:
-            movement = request.POST['movements']
-            if movement is not None:
-                if isinstance(movement, str) is True and len(movement) > 0 and movement != 'All':
-                    context['filters'].append(movement)
-        if 'year' in request.POST:
-            year = request.POST['year']
-            if year is not None:
-                if len(year) > 0:
-                    year = int(year)
-                    if isinstance(year, int) is True and year > 0:
-                        context['filters'].append(year)
-        if 'offset' in request.POST:
-            offset = request.POST['offset']
-            offset = int(offset)
-            if offset < 0:
-                offset = 0
-    r = sparql_service.search_artists(name, movement, year, limit=limit, offset=offset)
-    context["results"] = r
+        name = request.POST.get('search')
+        if valid_string(name):
+            context['filters'].append(name)
+
+        movement = request.POST.get('movements')
+        if valid_movement(movement):
+            context['filters'].append(movement)
+
+        year = int(request.POST.get('year', '-1'))
+        if valid_int(year):
+            context['filters'].append(year)
+
+        offset = max(int(request.POST.get('offset', '-1')), 0)
+
+    context["results"] = sparql_service.search_artists(
+        name, movement, year, limit=limit, offset=offset)
 
     context["more"] = dict()
     if name is not None:
@@ -54,8 +47,7 @@ def index(request):
         context["more"]["year"] = year
     if offset is not None:
         context["more"]["offset"] = offset
-    else:
-        context["more"]["offset"] = 0
+
     return render(request, 'arkapp/index.html', context)
 
 
@@ -68,9 +60,8 @@ def movements(request):
     if request.method == "POST":
         if 'search' in request.POST:
             name = request.POST['search']
-            if name is not None:
-                if isinstance(name, str) is True and len(name) > 0:
-                    context['filters'].append(name)
+            if valid_string(name):
+                context['filters'].append(name)
         r = sparql_service.get_movements(name=name)
     else:
         r = sparql_service.get_movements(name=None)
@@ -86,7 +77,7 @@ def view_artist(request):
     print(name)
     r = sparql_service.get_artist(name)
     context["results"] = r
-    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'],te=r['DeathDate'])
+    r2 = sparql_service.get_artists_depth(ts=r['BirthDate'], te=r['DeathDate'])
     context["depth"] = r2
     recommend = sparql_service.get_recommend_artist(name)
     context["recommend"] = recommend
@@ -133,10 +124,12 @@ def vizualize(request):
                     year = int(year)
                     if isinstance(year, int) is True and year > 0:
                         context['filters'].append(year)
-        r = sparql_service.search_artists_ext(name, movement, year, limit=limit, offset=offset)
+        r = sparql_service.search_artists_ext(
+            name, movement, year, limit=limit, offset=offset)
         context["results"] = r
     else:
-        r = sparql_service.search_artists_ext(None, None, None, limit=None, offset=None)
+        r = sparql_service.search_artists_ext(
+            None, None, None, limit=None, offset=None)
         context["results"] = r
     return render(request, 'arkapp/vizualize.html', context)
 

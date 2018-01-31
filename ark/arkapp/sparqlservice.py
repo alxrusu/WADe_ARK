@@ -1,12 +1,37 @@
 import requests
 
 
+def valid_int(f):
+    return f is not None and isinstance(f, int) and f > 0,
+
+
+def valid_string(f):
+    return f is not None and isinstance(f, str) and len(f) > 0
+
+
+def valid_movement(f):
+    return valid_string(f) and f != 'All'
+
+
+def inflate_payload(fields, values):
+    return {field: values[field]
+            for field, valid in fields.items()
+            if valid(values[field])}
+
+
 class SparqlService:
-    def valid_int(f): return f is not None and isinstance(f, int) and f > 0,
+
     valid_artist_fields = {
-        'name': lambda f: f is not None and isinstance(f, str) and len(f) > 0,
-        'movement': lambda f: f is not None and isinstance(f, str) and len(f) > 0 and f != 'All',
+        'name': valid_string,
+        'movement': valid_movement,
         'year': valid_int,
+        'limit': valid_int,
+        'offset': valid_int,
+    }
+
+    valid_artwork_fields = {
+        'name': valid_string,
+        'author': valid_string,
         'limit': valid_int,
         'offset': valid_int,
     }
@@ -14,17 +39,14 @@ class SparqlService:
     def __init__(self):
 
         self.url = "http://127.0.0.1:5000"
-        #self.url = "https://sparqlapi-dot-wadeark.appspot.com"
+        # self.url = "https://sparqlapi-dot-wadeark.appspot.com"
         # self.url = "http://127.0.0.1:5000"
-
 
     def search_artists(self, name=None, movement=None, year=None, limit=None, offset=None):
         values = {'name': name, 'movement': movement,
                   'year': year, 'limit': limit, 'offset': offset}
         url = self.url + '/artists'
-        payload = {field: values[field]
-                   for field, valid in self.valid_artist_fields.items()
-                   if valid(values[field])}
+        payload = inflate_payload(self.valid_artist_fields, values)
         try:
             return requests.get(url, params=payload).json()['Artists']
         except Exception as e:
@@ -33,7 +55,7 @@ class SparqlService:
 
     def search_artists_ext(self, name=None, movement=None, year=None, limit=None, offset=None):
         r = self.search_artists(name, movement, year, limit, offset)
-        #print(r)
+        # print(r)
         for t in r:
             artist_r = self.get_artist(t['Name'])
             if len(artist_r) > 0:
@@ -62,7 +84,7 @@ class SparqlService:
         placed = dict()
 
         for year in range(ts, te, 20):
-            #print(year)
+            # print(year)
             res = requests.get(url, params={"year": year})
             if res.status_code == 200:
                 try:
@@ -88,22 +110,12 @@ class SparqlService:
         return response
 
     def get_artworks(self, name=None, author=None, limit=None, offset=None):
+        values = {'name': name, 'author': author,
+                  'limit': limit, 'offset': offset}
         url = self.url + '/artworks'
-        payload = dict()
-        if name is not None:
-            if isinstance(name, str) is True and len(name) > 0:
-                payload['name'] = name
-        if author is not None:
-            if isinstance(author, str) is True and len(author) > 0:
-                payload['author'] = author
-        if limit is not None:
-            if isinstance(limit, int) is True and limit > 0:
-                payload['limit'] = limit
-        if offset is not None:
-            if isinstance(offset, int) is True and offset > 0:
-                payload['offset'] = offset
+        payload = inflate_payload(self.valid_artwork_fields, values)
         res = requests.get(url, params=payload)
-        #print(res.status_code)
+        # print(res.status_code)
         try:
             return res.json()['Artworks']
         except Exception:
@@ -115,11 +127,11 @@ class SparqlService:
             "name": name
         }
         res = requests.get(url, params=payload)
-        #print(res.status_code)
+        # print(res.status_code)
         if res.status_code == 400:
             return {}
         try:
-            #print(res.json())
+            # print(res.json())
             return res.json()
         except Exception:
             return {}
@@ -145,7 +157,7 @@ class SparqlService:
             "name": name
         }
         res = requests.get(url, params=payload)
-        #print(res.status_code)
+        # print(res.status_code)
         if res.status_code == 400:
             return {}
         try:
@@ -171,10 +183,10 @@ class SparqlService:
     def get_movements(self, name=None):
         url = self.url + '/movements'
         payload = dict()
-        if name is not None and isinstance(name, str) and len(name) > 0:
+        if valid_string(name):
             payload['name'] = name
         res = requests.get(url, params=payload)
-        #print(res.json())
+        # print(res.json())
         if res.status_code == 400:
             return []
         try:
