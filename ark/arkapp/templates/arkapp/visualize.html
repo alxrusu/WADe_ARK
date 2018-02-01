@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+
+    {% load font_awesome %}
+
+    {% fa_css %}
+
+    {% load static %}
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'arkapp/index.css' %}" type="text/css">
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#searchinput').keyup(function() {
+          $('#searchclear').toggle(Boolean($(this).val()));
+        });
+        $('#searchclear').toggle(Boolean($("#searchinput").val()));
+        $('#searchclear').click(function() {
+          $('#searchinput').val('').focus();
+          $(this).hide();
+        });
+
+        $("#generate").click(function(){
+          $( "#target" ).submit();
+        });
+      });
+    </script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'line']});
+      
+
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        
+        data.addColumn('number', 'Time');
+
+        {% for key, val in movements.items %}
+          data.addColumn('number', '{{ key }}');
+        {% endfor %}
+
+        var rows = [];
+
+        {% for mean, value in hist.items %}
+          var row = [{{ mean }}]
+          {% for el in value %}
+            row.push({{ el }})
+          {% endfor %}
+          rows.push(row);
+        {% endfor %}
+
+        data.addRows(rows);
+
+        var options = {
+          title: 'Popularity of movements between years {{ start_year }} and {{ end_year }}',
+          legend: { 
+            position: 'bottom',
+            maxLines: 10
+          },
+          hAxis: {
+            title: 'Time',
+            minValue: {{ start_year }}, maxValue: {{ end_year }}
+          },
+          curveType: 'function',
+          crosshair: {
+            color: '#000',
+            trigger: 'selection'
+          },
+        };
+
+        optionsmat= {
+          chart: {
+            title: 'Popularity of movements between years {{ start_year }} and {{ end_year }}'
+          },
+          axes: {
+            // Adds labels to each axis; they don't have to match the axis names.
+            y: {
+              0: {label: 'Pressence'}
+            }
+          }
+        };
+
+        // var chart = new google.charts.Line(document.getElementById('chart_line'));
+        var chart = new google.visualization.LineChart(document.getElementById('chart_line'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+
+
+  <body class="bg-white">
+    <!-- <div class="container"> -->
+      <nav class="navbar p-3 navbar-light bg-white justify-content-between navbar-custom">
+        <a class="navbar-brand" href="/ark"><i class="fa fa-image fa-2x"></i><h2>Ark</h2></a>
+      </nav>
+
+    <div class="wrapper">
+
+      <!-- Page Content -->
+      <div class="container text-center">
+        <a class="btn btn-info navbar-btn text-white" href="/ark">
+            Artists
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/artworks/">
+            Artworks
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/movements/">
+            Movements
+        </a>
+        <a class="btn btn-info navbar-btn text-white" href="/ark/visualize/">
+            Visualize
+        </a>
+        
+        <form id="target" method="post" class="form-inline w-100 search-custom" role="search">
+          {% csrf_token %}
+          <div class="input-group mb-3 w-100">
+              <input type="number" name="startYear" class="form-control" placeholder="year start" aria-label="" aria-describedby="basic-addon1">
+              <input type="number" name="endYear" class="form-control" placeholder="year end" aria-label="" aria-describedby="basic-addon1">
+          </div>
+
+          <button type="button" class="btn btn-dark" id="generate">Generate</button>
+        </form>
+
+        <div id="results">
+
+            <!-- {% for res in results %}
+                <div class="card">
+                  <img class="card-img-top" src="{{ res.Picture }}" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ res.Name }}</h5>
+                    <p class="card-text">{{ res.Description }}</p>
+                    <a href="artist/?name={{ res.Name }}" class="btn btn-primary">View Page</a>
+                  </div>
+                </div>
+              {% endfor %} -->
+
+            <div id="chart_line" style="height: 800px; margin: 0; padding-bottom: 50px;"></div>
+        </div>
+
+        
+      </div>
+
+    </div> 
+  </body>
+</html>
