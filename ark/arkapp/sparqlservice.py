@@ -101,6 +101,8 @@ class SparqlService:
                         r[ind]['BirthDate'] = birthdate
                         r[ind]['DeathDate'] = deathdate
 
+                    r[ind]['MeanYears'] = int((deathdate + birthdate) // 2)
+
                     if r[ind]['BirthDate'] <= te and r[ind]['DeathDate'] >= ts:
                         results.append(r[ind])
             return results

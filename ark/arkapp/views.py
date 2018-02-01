@@ -4,6 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .preprocessing import valid_string, valid_movement, valid_int
 from .sparqlservice import SparqlService
 
+import math
+
 sparql_service = SparqlService()
 
 
@@ -90,6 +92,7 @@ def view_artist(request):
 
     context["results"] = r
     context["depth"] = []
+    context["hist"] = {}
     if 'BirthDate' in r and valid_string(r['BirthDate']):
         death_date = r.get('DeathDate', None)
         birth_date = r['BirthDate']
@@ -124,40 +127,71 @@ def view_movement(request):
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
-def vizualize(request):
+def visualize(request):
     context = dict()
-    context['movements'] = sparql_service.get_movements()
-    context['filters'] = []
-    if request.method == "POST":
-        name = None
-        movement = None
-        year = None
-        limit = None
-        offset = None
+    context["depth"] = []
+    context["hist"] = {}
 
-        name = request.POST.get('search')
-        if valid_string(name):
-            context['filters'].append(name)
+    start = '1500-0'
+    end = '1620-0'
 
-        movement = request.POST.get('movements')
-        if valid_movement(movement):
-            context['filters'].append(movement)
+    try:
+        if request.method == "POST":
+            if 'startYear' in request.POST:
+                if valid_string(request.POST['startYear']):
+                    start = str(int(request.POST['startYear'])) + '-0'
+            if 'endYear' in request.POST:
+                if valid_string(request.POST['endYear']):
+                    end = str(int(request.POST['endYear'])) + '-0'
+    except Exception:
+        pass
 
-        if 'year' in request.POST:
-            year = request.POST['year']
-            if year is not None:
-                if len(year) > 0:
-                    year = int(year)
-                    if isinstance(year, int) is True and year > 0:
-                        context['filters'].append(year)
-        r = sparql_service.search_artists_ext(
-            name, movement, year, limit=limit, offset=offset)
-        context["results"] = r
-    else:
-        r = sparql_service.search_artists_ext(
-            None, None, None, limit=None, offset=None)
-        context["results"] = r
-    return render(request, 'arkapp/vizualize.html', context)
+    context["start_year"] = int(start.split('-')[0])
+    context["end_year"] = int(end.split('-')[0])
+
+    try:
+        r2 = sparql_service.get_artists_depth(ts=start, te=end)
+
+        all_movs_dict = {}
+        arr_ind = 0
+        for res in r2:
+            if 'Movements' in res:
+                movs = res['Movements'].split(', ')
+                for mov in movs:
+                    if mov not in all_movs_dict:
+                        all_movs_dict[mov] = arr_ind
+                        arr_ind += 1
+
+        histogram = dict()
+        num_movs = len(all_movs_dict)
+
+        context["movements"] = all_movs_dict
+
+
+        for ind in range(len(r2)):
+            if 'Movements' in r2[ind] and 'MeanYears' in r2[ind]:
+                meanYears = r2[ind]['MeanYears']
+
+                movs = r2[ind]['Movements'].split(', ')
+
+                for key in histogram:
+                    distance = math.sqrt((meanYears - int(key))**2)
+                    if distance < 20:
+                        for m in movs:
+                            mi = all_movs_dict[m]
+                            histogram[key][mi] += 1
+                        break
+                else:
+                    histogram[meanYears] = [0] * num_movs
+                    for m in movs:
+                        mi = all_movs_dict[m]
+                        histogram[meanYears][mi] = 1
+
+        context["depth"] = r2
+        context["hist"] = histogram
+    except Exception as e:
+        print(e, type(e))
+    return render(request, 'arkapp/visualize.html', context)
 
 
 @csrf_exempt
