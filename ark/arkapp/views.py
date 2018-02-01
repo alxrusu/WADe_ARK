@@ -94,7 +94,21 @@ def view_artist(request):
         death_date = r.get('DeathDate', None)
         birth_date = r['BirthDate']
         r2 = sparql_service.get_artists_depth(ts=birth_date, te=death_date)
+        histogram = dict()
+        for ind in range(len(r2)):
+            if 'Movements' in r2[ind]:
+                movs = r2[ind]['Movements'].split(', ')
+                for m in movs:
+                    if m in histogram:
+                        histogram[m]['Value'] += 1
+                    else:
+                        histogram[m] = {
+                            'Value': 1,
+                            'Movement': m
+                        }
+        print(histogram)
         context["depth"] = r2
+        context["hist"] = histogram
     context["movements"] = r["Movements"].split(", ")
     recommend = sparql_service.get_recommend_artist(name)
     context["recommend"] = recommend

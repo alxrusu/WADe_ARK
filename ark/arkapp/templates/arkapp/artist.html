@@ -22,53 +22,80 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['timeline']});
+
+      google.charts.load('current', {'packages':['timeline', 'corechart']});
+      
       google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var container = document.getElementById('vizualize');
-        var chart = new google.visualization.Timeline(container);
-        var dataTable = new google.visualization.DataTable();
+      google.charts.setOnLoadCallback(drawChartMov);
 
-        dataTable.addColumn({ type: 'string', id: 'Term' });
-        dataTable.addColumn({ type: 'string', id: 'Artist' });
-        dataTable.addColumn({ type: 'date', id: 'Start' });
-        dataTable.addColumn({ type: 'date', id: 'End' });
+      function drawChartMov() {
 
-        // dataTable.addRows([
-        //   [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
-        //   [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
-        //   [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]]
-        //   );
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Movement');
+        data.addColumn('number', 'Value');
 
         rows = [];
 
-        {% for res in depth %}
-          rows.push(['{{ res.Name }}', '{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+        {% for key, value in hist.items %}
+          rows.push(['{{ key }}', {{ value.Value }}]);
         {% endfor %}
 
-        var height = 500;
-        if (rows.length < 10) {
-          height = 200;
-        }
+        data.addRows(rows)
 
         var options = {
-          timeline: {
-            showRowLabels: false
+          hAxis: {
+            title: 'Movement'
           },
-          height: height
+          vAxis: {
+            title: 'Popularity'
+          },
+          legend : { position: 'none' },
+          bar: { groupWidth: '75%' }
         };
 
-        if (rows.length > 0) {
-          dataTable.addRows(rows);
-          chart.draw(dataTable, options);
-        }
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_mov'));
+        chart.draw(data, options);
+      };
+      
+      function drawChart() {
+          var container = document.getElementById('vizualize');
+          var chart = new google.visualization.Timeline(container);
+          var dataTable = new google.visualization.DataTable();
 
-        google.visualization.events.addListener(chart, 'select', selectHandler); 
+          dataTable.addColumn({ type: 'string', id: 'Term' });
+          dataTable.addColumn({ type: 'string', id: 'Artist' });
+          dataTable.addColumn({ type: 'date', id: 'Start' });
+          dataTable.addColumn({ type: 'date', id: 'End' });
 
-        function selectHandler(e)     {   
-            // alert(data.getValue(chart.getSelection()[0].row, 0));
-            window.location = '/ark/artist/?name=' + dataTable.getValue(chart.getSelection()[0]['row'], 0);
-        }
+          rows = [];
+
+          {% for res in depth %}
+            rows.push(['{{ res.Name }}', '{{ res.Name }}', new Date("{{res.BirthDate}}"), new Date("{{res.DeathDate}}")]);
+          {% endfor %}
+
+          var height = 500;
+          if (rows.length < 10) {
+            height = 200;
+          }
+
+          var options = {
+            timeline: {
+              showRowLabels: false
+            },
+            height: height
+          };
+
+          if (rows.length > 0) {
+            dataTable.addRows(rows);
+            chart.draw(dataTable, options);
+          }
+
+          google.visualization.events.addListener(chart, 'select', selectHandler); 
+
+          function selectHandler(e)     {   
+              // alert(data.getValue(chart.getSelection()[0].row, 0));
+              window.location = '/ark/artist/?name=' + dataTable.getValue(chart.getSelection()[0]['row'], 0);
+          }
       }
     </script>
    
@@ -130,11 +157,6 @@
             </div>
 
             <br>
-            <h3> Visualize </h3>
-
-            <div id="vizualize" ></div>
-
-            <br>
             <h3>Similar Artists</h3>
             <div class="card-columns">
                 {% for res in recommend %}
@@ -150,6 +172,12 @@
                 </div>
               {% endfor %}
             </div>
+
+            <h3>Artists timeline</h3>
+            <div id="vizualize" ></div>
+
+            <h3>Movements popularity</h3>
+            <div id="chart_mov" style="height: 600px; width: 100%"></div>
 
 
         </div>
