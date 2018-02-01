@@ -1,263 +1,273 @@
 <!DOCTYPE html>
 <!-- saved from url=(0031)http://scholarly.vernacular.io/ -->
 <html lang="en-GB"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width">
-    <title>Scholarly HTML — Markedly Smart</title>
-    <link rel="stylesheet" href="./scholarly.css">
-    <link rel="stylesheet" href="./prism-coy.css">
-    <script src="./prism.js.download" defer=""></script>
-  <style></style></head>
-  <body prefix="schema: http://schema.org/ xsd: http://www.w3.org/2001/XMLSchema# sa: https://ns.science.ai/">
-    <header>
-      <p class="title">Artwork Provenance</p>
-      <p class="subtitle">Web Application Development</p>
-    </header>
-    <article id="what" typeof="schema:ScholarlyArticle" resource="#">
-      <h1>Artwork Provenance</h1>
-      <section>
-        <ol>
-          <li property="schema:author" typeof="sa:ContributorRole">
-              <span property="schema:givenName">Alexandru</span>
-              <span property="schema:familyName">Rusu</span>
-          </li>
-          <li property="schema:author" typeof="sa:ContributorRole">
-              <span property="schema:givenName">Lucian</span>
-              <span property="schema:familyName">Alexandru</span>
-          </li>
-          <li property="schema:author" typeof="sa:ContributorRole">
-              <span property="schema:givenName">Cristian</span>
-              <span property="schema:familyName">Ion</span>
-          </li>
-        </ol>
-        
-      </section>
-
-      <section typeof="sa:Abstract" id="abstract">
-        <h2>Abstract</h2>
-        <p>
-           <code>Artwork Provenance</code> is intended to be a support website targeted for art specialists and enthusiasts alike. The final product is a platform which brings together the most renowned art pieces, together with their artist and educational information. There will also be a recommendation system in place, which will guide users towards similar artworks matching their most recent searches.
-        </p>
-      </section>
-      <section typeof="sa:MaterialsAndMethods" id="motivation">
-        <h2>Motivation</h2>
-		<p>
-			Education in the arts is an integral part of the development of each human being.
-			In today's world, the primary sources of content information is no longer physical, as most content can be delivered more quickly over the internet.
-			The project helps users that want to learn about artists and their works in an interactive way. 
-			Through the <code>Recommendation System</code>, users will be guided through a personalized learning experience.
-			Art is also a remarkable mode of depicting culture from all over the world.
-			The projects achieves to collect artworks from many cultures as well as different time periods, all easily accessible.
-		</p>
-      </section>
+  
+  <meta name="viewport" content="width=device-width">
+  <title>Scholarly HTML — Markedly Smart</title>
+  <link rel="stylesheet" href="./scholarly.css">
+  <link rel="stylesheet" href="./prism-coy.css">
+  <script src="./prism.js.download" defer=""></script>
+<style></style></head>
+<body prefix="schema: http://schema.org/ xsd: http://www.w3.org/2001/XMLSchema# sa: https://ns.science.ai/">
+  <header>
+    <p class="title">Artwork Provenance</p>
+    <p class="subtitle">Web Application Development</p>
+  </header>
+  <article id="what" typeof="schema:ScholarlyArticle" resource="#">
+    <h1>Artwork Provenance</h1>
+    <section>
+      <ol>
+        <li property="schema:author" typeof="sa:ContributorRole">
+          <span property="schema:givenName">Alexandru</span>
+          <span property="schema:familyName">Rusu</span>
+        </li>
+        <li property="schema:author" typeof="sa:ContributorRole">
+          <span property="schema:givenName">Lucian</span>
+          <span property="schema:familyName">Alexandru</span>
+        </li>
+        <li property="schema:author" typeof="sa:ContributorRole">
+          <span property="schema:givenName">Cristian</span>
+          <span property="schema:familyName">Ion</span>
+        </li>
+      </ol>
       
-		<h2>Workflow</h2>
-		
-		<p>The user acceses the main page. A <code>Trending Artworks and Artist List</code> will be available straight away, alongside a general purpouse <code>Search Box</code>.</p>
-		<p>The user can look for either an art piece, artist or visual style using the numerous and highly customisable search options provided by the ARK platform. </p>
-		<p>Upon selecting an entry, the details about it will be displayed, alongside a list of similar results.</p>
-		<p>Each artists will also have a dedicated page with information about his style and achievement. His most renowned artworks will be linked in his page.</p>
-		
-        <h2>Application Structure</h2>
-        
-
-		<figure typeof="sa:Image">
-            <img src="application structure.png">
-            <figcaption>
-				Application Structure
-            </figcaption>
-		</figure>
-		
-        <h2>Technologies</h2>  
-        <p>The project will have its bases in Python. The back-end will be developed using the <code>Django</code> framework because of its flexibility and easily applicable packages.</p>
-        <p>The artwork and artist information will be accessible through RESTful API Endpoints. The information will be provided by various <code>SPARQL</code> Endpoints, the main ones being <a href="http://wiki.dbpedia.org/">DBpedia</a> and <a href="https://www.wikidata.org/wiki/Wikidata:Main_Page">Wikidata</a>.</p>
-		<p>The front-end will be developed in <code>HTML5</code>, <code>CSS3</code> and <code>JavaScript</code>, with the <code>Bootstrap</code> framework aiding the stylisation and visual represantation.</p>
-		<p>A <code>MongoDB</code> database will be used aside Django in order to assure persistent data storing.
-		
-        <h2>RESTful API Specifications</h2>
-		<pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
-		<code class="language-yaml">
-/artists
-    GET
-    The Available Artists endpoint returns a list of Artist matching,
-        if given, period, movement and/or artist name returning a
-        given maximum number of results, possibly offset.
-
-/artist
-    GET
-    Returns information about an artist given their name.
-
-/artworks
-    GET
-    The Available Artworks endpoint returns a list of Artworks matching,
-        if given, title and/or author name returning a given maximum
-        number of results, possibly offset.
-
-/artwork
-    GET
-    Returns information about an artwork given their name.
-
-/movements
-    GET
-    The Available Movements endpoint returns a list of Movements matching,
-        if given, a name.
-
-/movement
-    GET
-    Returns information about a movement given its name.
-
-/recommend/artist
-    GET
-    The Available Recommendations endpoint returns a list of Artist related
-        to a given one.
-
-/recommend/artwork
-    GET
-    The Available Recommendations endpoint returns a list of Artworks related
-        to a given one.
-
-/artists/interval
-    GET
-    The Available Artists endpoint returns a list of Artist who lived
-        in the given time interval.
-        </code>
-		</pre>
-		<figcaption>
-			The markup for the Query Service.
-		</figcaption>
-		
-		<h2>SPARQL Queries</h2>
-		<p>Consider the following SPARQL Query:</p>
-		<pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
-		<code class="language-yaml">
-select distinct ?Depiction ?AuthorLabel ?Year ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
-    ?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
-    ?Painting rdfs:label "Boy Leading a Horse"@en.
-    ?Painting foaf:depiction ?Depiction.
-    ?Painting dbo:author ?Author.
-    ?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
-    ?Author rdfs:label ?AuthorLabel.
-    FILTER (lang(?AuthorLabel) = "en").
-    optional {
-        ?Painting dbp:heightMetric ?Height.
-        ?Painting dbp:widthMetric ?Width.
-    }
-    optional {
-        ?Painting dbp:year ?Year.
-    }
-    optional {
-        ?Painting dbo:museum ?Museum.
-        ?Museum rdfs:label ?MuseumLabel.
-        FILTER (lang(?MuseumLabel) = "en").
-    }
-    optional {
-        ?Painting dbp:city ?City.
-        ?City rdfs:label ?CityLabel.
-        FILTER (lang(?CityLabel) = "en").
-    }
-    optional {
-        ?Painting dbo:abstract ?Abstract.
-        FILTER (lang(?Abstract) = "en").
-    }
-} Limit 1
-        </code>
-		</pre>
-		<figcaption>
-			DBpedia SPARQL Query for the "Boy Leading a Horse" Artwork
-		</figcaption>
-	
-	<pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
-		<code class="language-yaml">
-select distinct ?ArtistLabel ?Depiction ?Description where {
-	?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
-	?Artist rdfs:label ?ArtistLabel.
-	?Artist foaf:depiction ?Depiction.
-	?Artist dct:description ?Description.
-	?Painting dbo:author ?Artist.
-	?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
-	FILTER (lang(?ArtistLabel) = "en").
-	FILTER (lang(?Description) = "en").
-	?MyArtist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
-	?MyArtist rdfs:label ?MyArtistLabel.
-	FILTER (?MyArtistLabel = "Pablo Picasso"@en).
-	FILTER (?Artist != ?MyArtist).
-	?MyArtist dbo:birthPlace ?MyBirthPlace.
-	?Artist dbo:birthPlace ?BirthPlace.
-	?MyBirthPlace dbo:country ?Country.
-	?BirthPlace dbo:country ?Country.
-} LIMIT 6
-	</code>
-		</pre>
-		<figcaption>
-			DBpedia SPARQL Query for getting 6 artists with the same country origin as Pablo Picasso.
-		</figcaption>
-		
-		<p>The example above illustrates a potential query for the search functionality.</p>
-		<p>In this example, we are interrogating DBpedia for all artworks belonging to Leonardo da Vinci which are either oil or panel painting, sorted by their public appearance year.</p>
-		<p>The query produces the following valid result:</p>
-		
-		<table class="sparql" border="1">
-  <tbody>
-  <tr>
-    <th>ArtistLabel</th>
-    <th>Depiction</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><pre>"Francisco de Zurbarán"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Francisco_de_Zurbarán_autoportrait.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Francisco_de_Zurbarán_autoportrait.jpg</a></td>
-    <td><pre>"Spanish painter"@en</pre></td>
-  </tr>
-  <tr>
-    <td><pre>"Bernat Martorell"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Bernat_Martorell_-_Saint_George_Killing_the_Dragon_-_Google_Art_Project.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Bernat_Martorell_-_Saint_George_Killing_the_Dragon_-_Google_Art_Project.jpg</a></td>
-    <td><pre>"Catalan painter"@en</pre></td>
-  </tr>
-  <tr>
-    <td><pre>"Juan Gris"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg</a></td>
-    <td><pre>"Spanish painter and sculptor"@en</pre></td>
-  </tr>
-  <tr>
-    <td><pre>"Salvador Dalí"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Salvador_Dalí_1939.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Salvador_Dalí_1939.jpg</a></td>
-    <td><pre>"Spanish artist"@en</pre></td>
-  </tr>
-  <tr>
-    <td><pre>"Joan Miró"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Portrait_of_Joan_Miro,_Barcelona_1935_June_13.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Portrait_of_Joan_Miro,_Barcelona_1935_June_13.jpg</a></td>
-    <td><pre>"Catalan painter, sculptor, and ceramicist"@en</pre></td>
-  </tr>
-  <tr>
-    <td><pre>"Ramon Martí Alsina"@en</pre></td>
-    <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/MartiAlsina-autorretrat-1870.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/MartiAlsina-autorretrat-1870.jpg</a></td>
-    <td><pre>"Spanish artist"@en</pre></td>
-  </tr>
-</tbody></table>
-
-		<h2>Task Distribution</h2>  
-        <li>Front End and Back End - Ion Cristian
-			<ul>
-        		<li>Design</li>
-				<li>API Endpoints</li>
-        	</ul>
-		</li>
-		
-        <li>Data management - Alexandru Lucian
-        	<ul>
-        		<li>SPARQL queries</li>
-        		<li>Database Management</li>
-        		<li>Recommendation Module</li>
-        	</ul>
-        </li>
-		
-		<li>Resources and Back End - Rusu Alexandru
-        	<ul>
-				<li>Integration</li>
-				<li>API Endpoints</li>
-         	</ul>
-        </li>
-
-    </article>
+    </section>
+    <section typeof="sa:Abstract" id="abstract">
+      <h2>Abstract</h2>
+      <p>
+        <code>Artwork Provenance</code> is intended to be a support website targeted for art specialists and enthusiasts alike. The final product is a platform which brings together the most renowned art pieces, together with their artist and educational information. There will also be a recommendation system in place, which will guide users towards similar artworks matching their most recent searches.
+      </p>
+    </section>
+    <section typeof="sa:MaterialsAndMethods" id="motivation">
+      <h2>Motivation</h2>
+      <p>
+        Education in the arts is an integral part of the development of each human being.
+        In today's world, the primary sources of content information is no longer physical, as most content can be delivered more quickly over the internet.
+        The project helps users that want to learn about artists and their works in an interactive way.
+        Through the <code>Recommendation System</code>, users will be guided through a personalized learning experience.
+        Art is also a remarkable mode of depicting culture from all over the world.
+        The projects achieves to collect artworks from many cultures as well as different time periods, all easily accessible.
+      </p>
+    </section>
     
-</body></html>
+    <h2>Workflow</h2>
+    
+    <p>The user acceses the main page. <code>Artworks, Artists and Movenments</code> will be available straight away, alongside a general purpouse <code>Search Box with multiple Filters</code>.</p>
+    <p>The user can look for either an art piece, artist or visual style using the numerous and highly customisable search options provided by the ARK platform or by requesting the information directly from the exposed <code>API Endpoint</code></p>
+    <p>Upon selecting an entry, the details about it will be displayed, alongside a list of similar results <code>recomended</code> by the system and a <code>visual representation</code> of insights on the provenance of the selected work of art.</p>
+    <p>Each artists will also have a dedicated page with information about his style and achievements. His most renowned artworks will be linked in his page alongside a list of recommended simmilar artists.</p>
+    
+    <h2>Application Structure</h2>
+    
+    <figure typeof="sa:Image">
+      <img src="application_structure.png">
+      <figcaption>
+      Application Structure
+      </figcaption>
+    </figure>
+    
+    <h2>Technologies</h2>
+    <p>The project will have its bases in Python. The back-end will be developed using the <code>Django</code> framework because of its flexibility and easily applicable packages.</p>
+    <p>The artwork and artist information will be accessible through RESTful API Endpoints offered by a <code>designated service</code>. The information will be provided by various <code>SPARQL</code> Endpoints, the main ones being <a href="http://wiki.dbpedia.org/">DBpedia</a> and <a href="https://www.wikidata.org/wiki/Wikidata:Main_Page">Wikidata</a>.</p>
+    <p>The front-end will be developed in <code>HTML5</code>, <code>CSS3</code> and <code>JavaScript</code>, with the <code>Bootstrap</code> framework aiding the stylisation and visual represantation.</p>
+    
+    <h2>RESTful API Specifications</h2>
+    <p>The information provided by the <code>Service</code> is to be found in an adnotated <code>JSON-LD</code> format, ready to be digested by third party clients.</p>
+    <p>The Endpoints exposed by the Service are:</p>
+    <pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
+      <code class="language-yaml">
+      /artists
+          GET
+          The Available Artists endpoint returns a list of Artist matching,
+              if given, period, movement and/or artist name returning a
+              given maximum number of results, possibly offset.
+      /artist
+          GET
+          Returns information about an artist given their name.
+      /artworks
+          GET
+          The Available Artworks endpoint returns a list of Artworks matching,
+              if given, title and/or author name returning a given maximum
+              number of results, possibly offset.
+      /artwork
+          GET
+          Returns information about an artwork given their name.
+      /movements
+          GET
+          The Available Movements endpoint returns a list of Movements matching,
+              if given, a name.
+      /movement
+          GET
+          Returns information about a movement given its name.
+      /recommend/artist
+          GET
+          The Available Recommendations endpoint returns a list of Artist related
+              to a given one.
+      /recommend/artwork
+          GET
+          The Available Recommendations endpoint returns a list of Artworks related
+              to a given one.
+      /artists/interval
+          GET
+          The Available Artists endpoint returns a list of Artist who lived
+              in the given time interval.
+              </code>
+    </pre>
+    <figcaption>
+    The markup for the Query Service.
+    </figcaption>
+    <p>The input will be parsed from the URL parameters and validated. The possible responses are Code <code>200</code>, alongside the available requested data, and Code <code>400</code> in case of an error, followed by a reasoning for the error.
+      <h2>SPARQL Queries</h2>
+      <p>Two of the most interesting and complex SPARQL queries are the following:</p>
+      <pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
+        <code class="language-yaml">
+        select distinct ?Depiction ?AuthorLabel ?Year ?MuseumLabel ?CityLabel ?Height ?Width ?Abstract where {
+            ?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+            ?Painting rdfs:label "Boy Leading a Horse"@en.
+            ?Painting foaf:depiction ?Depiction.
+            ?Painting dbo:author ?Author.
+            ?Author <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+            ?Author rdfs:label ?AuthorLabel.
+            FILTER (lang(?AuthorLabel) = "en").
+            optional {
+                ?Painting dbp:heightMetric ?Height.
+                ?Painting dbp:widthMetric ?Width.
+            }
+            optional {
+                ?Painting dbp:year ?Year.
+            }
+            optional {
+                ?Painting dbo:museum ?Museum.
+                ?Museum rdfs:label ?MuseumLabel.
+                FILTER (lang(?MuseumLabel) = "en").
+            }
+            optional {
+                ?Painting dbp:city ?City.
+                ?City rdfs:label ?CityLabel.
+                FILTER (lang(?CityLabel) = "en").
+            }
+            optional {
+                ?Painting dbo:abstract ?Abstract.
+                FILTER (lang(?Abstract) = "en").
+            }
+        } Limit 1
+                </code>
+      </pre>
+      <figcaption>
+      DBpedia SPARQL Query for the "Boy Leading a Horse" Artwork
+      </figcaption>
+      
+      <pre property="schema:programmingLanguage" typeof="schema:Language" class="language-yaml">
+        <code class="language-yaml">
+        select distinct ?ArtistLabel ?Depiction ?Description where {
+          ?Artist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+          ?Artist rdfs:label ?ArtistLabel.
+          ?Artist foaf:depiction ?Depiction.
+          ?Artist dct:description ?Description.
+          ?Painting dbo:author ?Artist.
+          ?Painting <http://purl.org/linguistics/gold/hypernym> dbr:Painting.
+        FILTER (lang(?ArtistLabel) = "en").
+        FILTER (lang(?Description) = "en").
+          ?MyArtist <http://purl.org/linguistics/gold/hypernym> dbr:Painter.
+          ?MyArtist rdfs:label ?MyArtistLabel.
+        FILTER (?MyArtistLabel = "Pablo Picasso"@en).
+        FILTER (?Artist != ?MyArtist).
+          ?MyArtist dbo:birthPlace ?MyBirthPlace.
+          ?Artist dbo:birthPlace ?BirthPlace.
+          ?MyBirthPlace dbo:country ?Country.
+          ?BirthPlace dbo:country ?Country.
+        } LIMIT 6
+        </code>
+      </pre>
+      <figcaption>
+      DBpedia SPARQL Query for getting 6 artists with the same country origin as Pablo Picasso.
+      </figcaption>
+      
+      <p>The example above illustrates a potential query for the search functionality.</p>
+      
+      <p>The query produces the following valid result:</p>
+      
+      <table class="sparql" border="1">
+        <tbody>
+          <tr>
+            <th>ArtistLabel</th>
+            <th>Depiction</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><pre>"Francisco de Zurbarán"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Francisco_de_Zurbarán_autoportrait.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Francisco_de_Zurbarán_autoportrait.jpg</a></td>
+            <td><pre>"Spanish painter"@en</pre></td>
+          </tr>
+          <tr>
+            <td><pre>"Bernat Martorell"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Bernat_Martorell_-_Saint_George_Killing_the_Dragon_-_Google_Art_Project.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Bernat_Martorell_-_Saint_George_Killing_the_Dragon_-_Google_Art_Project.jpg</a></td>
+            <td><pre>"Catalan painter"@en</pre></td>
+          </tr>
+          <tr>
+            <td><pre>"Juan Gris"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg</a></td>
+            <td><pre>"Spanish painter and sculptor"@en</pre></td>
+          </tr>
+          <tr>
+            <td><pre>"Salvador Dalí"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Salvador_Dalí_1939.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Salvador_Dalí_1939.jpg</a></td>
+            <td><pre>"Spanish artist"@en</pre></td>
+          </tr>
+          <tr>
+            <td><pre>"Joan Miró"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/Portrait_of_Joan_Miro,_Barcelona_1935_June_13.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/Portrait_of_Joan_Miro,_Barcelona_1935_June_13.jpg</a></td>
+            <td><pre>"Catalan painter, sculptor, and ceramicist"@en</pre></td>
+          </tr>
+          <tr>
+            <td><pre>"Ramon Martí Alsina"@en</pre></td>
+            <td><a href="http://commons.wikimedia.org/wiki/Special:FilePath/MartiAlsina-autorretrat-1870.jpg">http://commons.wikimedia.org/wiki/Special:FilePath/MartiAlsina-autorretrat-1870.jpg</a></td>
+            <td><pre>"Spanish artist"@en</pre></td>
+          </tr>
+        </tbody></table>
+        <h2>Fat Server</h2>
+        <p>Due to the the fact that the core functionality of the application is already offered by the API Endpoints, we have chosen to take part of the processing burden off the client. The View server is by design fat, but only consists of an addapter component capable of requesting from the API and a template-based UI component.</p>
+        <p>Even though the interface is designed primarily for human clients, the relevant data presented is adnotated and can easily be processed by third party clients.</p>
+        <p>A representation of the schema that can be found when querying the UI for artworks can be seen here:</p>
+        <figure typeof="sa:Image">
+          <img src="artworks_schema.png">
+          <figcaption>
+          Artworks Schema
+          </figcaption>
+        </figure>
+        <h2>Data visualization</h2>
+        <p>When querying for an artist, the UI shows some statistics regarding <code>other artists</code> living in the same period and also regarding the <code>popularity of artistic movements</code> found in the same period. The user can also interact with the visual representation of relationships and explore them.</p>
+        <p>A graphical representation of the concept when querying Albrecht Dürer can be seen here:</p>
+        <figure typeof="sa:Image">
+          <img src="visualize.png">
+          <figcaption>
+          Visualization of relationships with Albrecht Dürer.
+          </figcaption>
+        </figure>
+        <h2>Task Distribution</h2>
+        <li><b>Ion Cristian</b>
+          <ul>
+            <li>Design</li>
+            <li>Visualization</li>
+            <li>Application deployment</li>
+          </ul>
+        </li>
+        
+        <li><b>Alexandru Lucian</b>
+          <ul>
+            <li>SPARQL queries</li>
+            <li>Recommendation Sytem</li>
+            <li>Query Service</li>
+          </ul>
+        </li>
+        
+        <li><b>Rusu Alexandru</b>
+          <ul>
+            <li>Semantics</li>
+            <li>Integration</li>
+            <li>Code managing and refactoring</li>
+          </ul>
+        </li>
+      </article>
+      
+    </body></html>
